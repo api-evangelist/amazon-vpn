@@ -1,0 +1,71 @@
+aid: amazon-vpn
+name: Amazon VPN
+description: >-
+  AWS VPN solutions establish secure connections between on-premises networks,
+  remote offices, client devices, and the AWS global network. AWS offers two
+  types of private connectivity: AWS Site-to-Site VPN and AWS Client VPN,
+  enabling encrypted tunnels between your network and Amazon Virtual Private Cloud.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - VPN
+  - Networking
+  - Security
+  - AWS
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/amazon-vpn/refs/heads/main/apis.yml
+created: '2026-03-16'
+modified: '2026-03-16'
+specificationVersion: '0.19'
+apis:
+  - aid: amazon-vpn:aws-vpn-api
+    name: AWS VPN API
+    description: >-
+      The AWS VPN API (part of the Amazon EC2 API) provides programmatic access
+      to create and manage VPN connections, customer gateways, virtual private
+      gateways, and Client VPN endpoints. It enables configuration of Site-to-Site
+      VPN and Client VPN for secure hybrid connectivity.
+    humanURL: https://aws.amazon.com/vpn/
+    baseURL: https://ec2.amazonaws.com
+    tags:
+      - VPN
+      - Networking
+      - Security
+      - AWS
+    properties:
+      - type: Documentation
+        url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
+      - type: Reference
+        url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/OperationList-query-vpn.html
+      - type: Getting Started
+        url: https://docs.aws.amazon.com/vpn/latest/s2svpn/SetUpVPNConnections.html
+      - type: Pricing
+        url: https://aws.amazon.com/vpn/pricing/
+      - type: FAQ
+        url: https://aws.amazon.com/vpn/faqs/
+common:
+  - type: Portal
+    url: https://aws.amazon.com/
+  - type: Website
+    url: https://aws.amazon.com/vpn/
+  - type: Documentation
+    url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
+  - type: Console
+    url: https://console.aws.amazon.com/vpc/
+  - type: Terms of Service
+    url: https://aws.amazon.com/service-terms/
+  - type: Privacy Policy
+    url: https://aws.amazon.com/privacy/
+  - type: Support
+    url: https://aws.amazon.com/premiumsupport/
+  - type: Sign Up
+    url: https://signin.aws.amazon.com/signup?request_type=register
+  - type: Login
+    url: https://aws.amazon.com/console/
+  - type: Status
+    url: https://health.aws.amazon.com/health/status
+  - type: GitHub Organization
+    url: https://github.com/aws
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
