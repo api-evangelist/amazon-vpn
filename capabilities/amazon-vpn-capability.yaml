@@ -1,0 +1,7 @@
+id: amazon-vpn-capability
+name: Amazon VPN Capability
+description: Workflow-oriented capability for Amazon VPN
+tags:
+- AWS
+consumes:
+- ref: capabilities/shared/amazon-vpn-shared.yaml

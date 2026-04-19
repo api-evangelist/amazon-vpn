@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "amazon_vpn": "https://aws.amazon.com/amazon-vpn/vocab#"
+  }
+}
