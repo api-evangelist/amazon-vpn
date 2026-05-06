@@ -1,5 +1,0 @@
-id: amazon-vpn
-name: Amazon VPN
-description: Shared capability definition for Amazon VPN
-namespace: amazon-vpn
-operations: []
