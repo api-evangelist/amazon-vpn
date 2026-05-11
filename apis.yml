@@ -82,6 +82,17 @@ common:
   data:
   - name: Cloud Operations
     description: Use Amazon VPN to manage and automate cloud operations.
+- type: Integrations
+  url: https://aws.amazon.com/partners/
+integrations:
+  - name: Partner Programs
+  - name: Resources
+  - name: Success Stories
+  - name: Work with an AWS Partner
+  - name: AWS Marketplace
+  - name: AWS Partner Central
+  - name: Partner Paths
+  - name: co-sell with AWS
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
