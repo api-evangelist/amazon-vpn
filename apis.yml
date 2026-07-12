@@ -41,6 +41,14 @@ apis:
       - type: FAQ
         url: https://aws.amazon.com/vpn/faqs/
 common:
+  - type: TrustCenter
+    url: security/amazon-vpn-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/amazon-vpn-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/amazon-vpn-domain-security.yml
+  - type: Authentication
+    url: authentication/amazon-vpn-authentication.yml
   - type: Portal
     url: https://aws.amazon.com/
   - type: Website
