@@ -41,6 +41,8 @@ apis:
       - type: FAQ
         url: https://aws.amazon.com/vpn/faqs/
 common:
+  - type: AgenticAccess
+    url: agentic-access/amazon-vpn-agentic-access.yml
   - type: TrustCenter
     url: security/amazon-vpn-trust-center.yml
   - type: VulnerabilityDisclosure
