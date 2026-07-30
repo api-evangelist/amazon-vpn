@@ -5,7 +5,20 @@ description: >-
   AWS global network. AWS offers two types of private connectivity: AWS Site-to-Site VPN and AWS Client VPN, enabling
   encrypted tunnels between your network and Amazon Virtual Private Cloud.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/amazon-vpn.png
 tags:
   - AWS
   - Networking
@@ -16,30 +29,42 @@ created: '2026-03-16'
 modified: '2026-04-19'
 specificationVersion: '0.19'
 apis:
-  - aid: amazon-vpn:aws-vpn-api
-    name: AWS VPN API
-    description: >-
-      The AWS VPN API (part of the Amazon EC2 API) provides programmatic access to create and manage VPN connections,
-      customer gateways, virtual private gateways, and Client VPN endpoints. It enables configuration of Site-to-Site
-      VPN and Client VPN for secure hybrid connectivity.
-    humanURL: https://aws.amazon.com/vpn/
-    baseURL: https://ec2.amazonaws.com
-    tags:
-      - AWS
-      - Networking
-      - Security
-      - VPN
-    properties:
-      - type: Documentation
-        url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
-      - type: APIReference
-        url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/OperationList-query-vpn.html
-      - type: GettingStarted
-        url: https://docs.aws.amazon.com/vpn/latest/s2svpn/SetUpVPNConnections.html
-      - type: Pricing
-        url: https://aws.amazon.com/vpn/pricing/
-      - type: FAQ
-        url: https://aws.amazon.com/vpn/faqs/
+- aid: amazon-vpn:aws-vpn-api
+  name: AWS VPN API
+  description: >-
+    The AWS VPN API (part of the Amazon EC2 API) provides programmatic access to create and manage VPN
+    connections, customer gateways, virtual private gateways, and Client VPN endpoints. It enables configuration
+    of Site-to-Site VPN and Client VPN for secure hybrid connectivity.
+  humanURL: https://aws.amazon.com/vpn/
+  baseURL: https://ec2.amazonaws.com
+  tags:
+  - AWS
+  - Networking
+  - Security
+  - VPN
+  properties:
+  - type: Documentation
+    url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
+  - type: APIReference
+    url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/OperationList-query-vpn.html
+  - type: GettingStarted
+    url: https://docs.aws.amazon.com/vpn/latest/s2svpn/SetUpVPNConnections.html
+  - type: Pricing
+    url: https://aws.amazon.com/vpn/pricing/
+  - type: FAQ
+    url: https://aws.amazon.com/vpn/faqs/
+- aid: amazon-vpn:amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api
+  name: Amazon VPN AWS VPN API (Amazon EC2 Query API Subset) API
+  description: >-
+    The AWS VPN API (Amazon EC2 Query API Subset) API from Amazon VPN — 1 operation(s) for aws vpn api
+    (amazon ec2 query api subset).
+  humanURL: https://aws.amazon.com/vpn/
+  baseURL: https://ec2.amazonaws.com
+  tags:
+  - AWS VPN API (Amazon EC2 Query API Subset)
+  properties:
+  - type: OpenAPI
+    url: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
 common:
   - type: AgenticAccess
     url: agentic-access/amazon-vpn-agentic-access.yml
