@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: AWS VPN API (Amazon EC2 Query API subset)
+  version: "2016-11-15"
+  description: |
+    AWS Site-to-Site VPN and Client VPN operations exposed through the
+    Amazon EC2 Query API. Manage VPN connections, customer gateways,
+    virtual private gateways, and Client VPN endpoints between
+    on-premises networks, remote users, and Amazon VPC.
+    All requests use HTTP POST with form-encoded query parameters
+    (`Action=<Name>`) against the regional EC2 endpoint, signed with
+    AWS Signature Version 4 (SigV4).
+  contact:
+    name: Amazon Web Services
+    url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
+servers:
+  - url: https://ec2.{region}.amazonaws.com
+    description: Amazon EC2 regional endpoint
+    variables:
+      region:
+        default: us-east-1
+        description: AWS region identifier.
+tags:
+  - name: Site-to-Site VPN
+    description: Manage site-to-site IPSec VPN connections.
+  - name: Customer Gateways
+    description: Manage customer gateways representing on-premises devices.
+  - name: Virtual Private Gateways
+    description: Manage virtual private gateways attached to VPCs.
+  - name: Client VPN
+    description: Manage AWS Client VPN endpoints for remote users.
+paths:
+  /:
+    post:
+      summary: Invoke an EC2 VPN action
+      description: |
+        All AWS VPN operations are invoked by POSTing form-encoded
+        parameters with `Action=<OperationName>` and `Version=2016-11-15`
+        to the regional EC2 endpoint.
+      operationId: invokeVpnAction
+      parameters:
+        - in: query
+          name: Action
+          required: true
+          schema:
+            type: string
+            enum:
+              - CreateVpnConnection
+              - DescribeVpnConnections
+              - DeleteVpnConnection
+              - ModifyVpnConnection
+              - ModifyVpnConnectionOptions
+              - ModifyVpnTunnelCertificate
+              - ModifyVpnTunnelOptions
+              - CreateVpnConnectionRoute
+              - DeleteVpnConnectionRoute
+              - CreateCustomerGateway
+              - DescribeCustomerGateways
+              - DeleteCustomerGateway
+              - CreateVpnGateway
+              - DescribeVpnGateways
+              - DeleteVpnGateway
+              - AttachVpnGateway
+              - DetachVpnGateway
+              - EnableVgwRoutePropagation
+              - DisableVgwRoutePropagation
+              - CreateClientVpnEndpoint
+              - DescribeClientVpnEndpoints
+              - DeleteClientVpnEndpoint
+              - ModifyClientVpnEndpoint
+              - AssociateClientVpnTargetNetwork
+              - DisassociateClientVpnTargetNetwork
+              - AuthorizeClientVpnIngress
+              - RevokeClientVpnIngress
+              - ImportClientVpnClientCertificateRevocationList
+              - ExportClientVpnClientCertificateRevocationList
+              - CreateClientVpnRoute
+              - DeleteClientVpnRoute
+              - DescribeClientVpnConnections
+              - TerminateClientVpnConnections
+        - in: query
+          name: Version
+          required: true
+          schema:
+            type: string
+            enum: ["2016-11-15"]
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              description: Action-specific parameters.
+      responses:
+        "200":
+          description: Action-specific XML response.
+          content:
+            text/xml:
+              schema:
+                type: object
+        "400":
+          description: Client error.
+        "500":
+          description: Server error.
+components:
+  securitySchemes:
+    SigV4:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: AWS Signature Version 4 signed request.
+security:
+  - SigV4: []

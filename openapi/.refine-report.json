@@ -1,0 +1,14 @@
+{
+  "provider": "amazon-vpn",
+  "sources": [
+    "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml"
+  ],
+  "outputs": [
+    "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
