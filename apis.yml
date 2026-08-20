@@ -60,7 +60,8 @@ apis:
     (amazon ec2 query api subset).
   humanURL: https://aws.amazon.com/vpn/
   baseURL: https://ec2.amazonaws.com
-  tags:
+  tags: []
+  tags_raw:
   - AWS VPN API (Amazon EC2 Query API Subset)
   properties:
   - type: OpenAPI
