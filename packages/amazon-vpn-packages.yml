@@ -1,0 +1,156 @@
+generated: '2026-09-01'
+method: searched
+source: >-
+  Public registry metadata endpoints (registry.npmjs.org, pypi.org, rubygems.org,
+  repo.packagist.org, crates.io, api.nuget.org, repo1.maven.org, proxy.golang.org)
+  queried 2026-09-01, plus https://aws.amazon.com/developer/tools/
+note: >-
+  AWS VPN has no VPN-specific client library. Site-to-Site VPN and Client VPN are
+  operated through the Amazon EC2 Query API, so the first-party clients are the AWS
+  SDKs' EC2 clients and the AWS CLI. Every package below is published by Amazon Web
+  Services (npm @aws-sdk scope, PyPI boto3/botocore, RubyGems aws-sdk-ec2, Packagist
+  aws/aws-sdk-php, crates.io aws-sdk-ec2, NuGet AWSSDK.*, Maven software.amazon.awssdk,
+  Go github.com/aws/aws-sdk-go-v2) and each ships the VPN operations of the EC2 API
+  (CreateVpnConnection, DescribeVpnConnections, CreateClientVpnEndpoint, ...).
+  Currency is the finding: every release below is dated within days of this probe.
+packages:
+  - language: javascript
+    registry: npm
+    name: "@aws-sdk/client-ec2"
+    url: https://www.npmjs.com/package/@aws-sdk/client-ec2
+    install: npm install @aws-sdk/client-ec2
+    official: true
+    version: 3.1124.0
+    published: '2026-09-01'
+    note: AWS SDK for JavaScript v3 EC2 client; carries all Site-to-Site VPN and Client VPN commands.
+  - language: javascript
+    registry: npm
+    name: aws-sdk
+    url: https://www.npmjs.com/package/aws-sdk
+    install: npm install aws-sdk
+    official: true
+    version: 2.1693.0
+    published: '2025-12-09'
+    note: >-
+      AWS SDK for JavaScript v2 (monolithic). In maintenance mode — AWS ended support
+      2025-09-08 and directs new work to the v3 @aws-sdk/client-ec2 package above.
+      The 2025-12-09 release date against a v3 client released 2026-09-01 is the decay signal.
+  - language: python
+    registry: pypi
+    name: boto3
+    url: https://pypi.org/project/boto3/
+    install: pip install boto3
+    official: true
+    version: 1.43.86
+    published: '2026-09-01'
+    note: EC2 client exposes create_vpn_connection, describe_vpn_connections, create_client_vpn_endpoint.
+  - language: python
+    registry: pypi
+    name: botocore
+    url: https://pypi.org/project/botocore/
+    install: pip install botocore
+    official: true
+    version: 1.43.86
+    published: '2026-09-01'
+    note: >-
+      Carries the machine-readable EC2 service model (botocore/data/ec2/2016-11-15/service-2.json)
+      that every AWS SDK generates from — the closest thing AWS publishes to a full
+      machine-readable contract for the VPN operations.
+  - language: python
+    registry: pypi
+    name: awscli
+    url: https://pypi.org/project/awscli/
+    install: pip install awscli
+    official: true
+    version: 1.46.1
+    published: '2026-08-27'
+    note: AWS CLI v1. See cli/amazon-vpn-cli.yml for the command surface.
+  - language: ruby
+    registry: rubygems
+    name: aws-sdk-ec2
+    url: https://rubygems.org/gems/aws-sdk-ec2
+    install: gem install aws-sdk-ec2
+    official: true
+    version: 1.642.0
+    published: '2026-09-01'
+  - language: php
+    registry: packagist
+    name: aws/aws-sdk-php
+    url: https://packagist.org/packages/aws/aws-sdk-php
+    install: composer require aws/aws-sdk-php
+    official: true
+    version: 3.394.6
+    published: '2026-09-01'
+  - language: rust
+    registry: crates.io
+    name: aws-sdk-ec2
+    url: https://crates.io/crates/aws-sdk-ec2
+    install: cargo add aws-sdk-ec2
+    official: true
+    version: 1.252.0
+    published: '2026-09-01'
+  - language: dotnet
+    registry: nuget
+    name: AWSSDK.EC2
+    url: https://www.nuget.org/packages/AWSSDK.EC2
+    install: dotnet add package AWSSDK.EC2
+    official: true
+    version: 4.0.115
+    published: null
+    note: >-
+      Version read from the NuGet registration index (upper = 4.0.115). NuGet's search
+      endpoint returned no `published` timestamp on this query, so the date is recorded
+      as null rather than guessed.
+  - language: java
+    registry: maven-central
+    name: software.amazon.awssdk:ec2
+    url: https://central.sonatype.com/artifact/software.amazon.awssdk/ec2
+    install: 'implementation("software.amazon.awssdk:ec2:2.54.10")'
+    official: true
+    version: 2.54.10
+    published: '2026-09-01'
+    note: >-
+      Version and date read from repo1.maven.org maven-metadata.xml (latest 2.54.10,
+      lastUpdated 20260901215554). The search.maven.org solrsearch index lagged at
+      2.46.7 / 2026-06-09 at probe time; the repository metadata is authoritative.
+  - language: go
+    registry: go-modules
+    name: github.com/aws/aws-sdk-go-v2/service/ec2
+    url: https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/ec2
+    install: go get github.com/aws/aws-sdk-go-v2/service/ec2
+    official: true
+    version: v1.327.0
+    published: '2026-09-01'
+  - language: typescript
+    registry: npm
+    name: aws-cdk
+    url: https://www.npmjs.com/package/aws-cdk
+    install: npm install -g aws-cdk
+    official: true
+    version: 2.1139.0
+    published: '2026-08-26'
+    note: >-
+      Infrastructure-as-code path to the same VPN resources (aws-cdk-lib
+      aws_ec2.VpnConnection / CfnClientVpnEndpoint). Not a VPN API client.
+  - language: python
+    registry: pypi
+    name: awslabs.aws-network-mcp-server
+    url: https://pypi.org/project/awslabs.aws-network-mcp-server/
+    install: uvx awslabs.aws-network-mcp-server@latest
+    official: true
+    version: 0.0.16
+    published: '2026-08-26'
+    note: >-
+      AWS Core Network MCP server (awslabs/mcp). Ships a list_vpn_connections tool.
+      See mcp/amazon-vpn-mcp.yml.
+  - language: python
+    registry: pypi
+    name: awslabs.aws-api-mcp-server
+    url: https://pypi.org/project/awslabs.aws-api-mcp-server/
+    install: uvx awslabs.aws-api-mcp-server@latest
+    official: true
+    version: 1.5.4
+    published: '2026-09-01'
+    note: >-
+      AWS API MCP server (awslabs/mcp) — executes AWS CLI commands, including the
+      `aws ec2 *-vpn-*` surface. See mcp/amazon-vpn-mcp.yml.

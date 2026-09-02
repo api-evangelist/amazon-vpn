@@ -4,10 +4,21 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Amazon VPN
 providerId: amazon-vpn
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-01'
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/throttling.html
+docs:
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/throttling.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-limits.html
+  - https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/limits.html
+note: >-
+  Replaces the 2026-05-04 bulk-sweep scaffold, which asserted invented X-RateLimit-*
+  headers and 1,000-requests-per-month tiers that AWS does not publish. AWS VPN is
+  operated through the Amazon EC2 Query API, which throttles per AWS account per Region
+  with a token-bucket algorithm and returns RequestLimitExceeded. There are no
+  rate-limit response headers on this API — the runtime signal is the error code, and
+  that absence is the finding an agent needs.
 tags:
   - AWS
   - Networking
@@ -16,76 +27,134 @@ tags:
   - Rate Limiting
   - Quotas
   - Throttling
-description: Machine-readable rate limit definitions for the Amazon VPN API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
+description: >-
+  Published Amazon EC2 Query API throttling limits as they apply to the AWS VPN action
+  surface, plus the Site-to-Site VPN and Client VPN resource quotas. Limits are
+  per-AWS-account and per-Region, enforced with a token bucket (burst = bucket maximum
+  capacity, sustained = refill rate per second).
+algorithm: token-bucket
+scope: per-account-per-region-per-action
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  limit: null
+  remaining: null
+  reset: null
+  retryAfter: null
+  policy: null
+  note: >-
+    The Amazon EC2 Query API returns NO rate-limit response headers. Callers detect
+    throttling from the error code in the XML error envelope, not from headers. This
+    was verified against the published throttling reference; nothing in that document
+    names a response header.
 responseCodes:
-  throttled: 429
-  quotaExceeded: 429
+  throttled: 503
+  throttledErrorCode: RequestLimitExceeded
+  throttlingException: 400
   serviceUnavailable: 503
+  note: >-
+    `RequestLimitExceeded` is the EC2 API throttling error code. The generic
+    `ThrottlingException` common error is documented with HTTP status 400. AWS SDKs
+    retry both automatically with exponential backoff and jitter.
+retry:
+  strategy: exponential-backoff-with-jitter
+  sdk_automatic: true
+  docs: https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
+limit_count: 7
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - AWS VPN API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - AWS VPN API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - AWS VPN API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - AWS VPN API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - AWS VPN API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Non-mutating actions
+    scope: per-account-per-region-per-action
+    applies_to: >-
+      Describe*, List*, Search*, Get* VPN actions not in another category — includes
+      DescribeVpnConnections, DescribeVpnGateways, DescribeCustomerGateways,
+      DescribeClientVpnEndpoints, DescribeClientVpnConnections.
+    burst: 100
+    sustained_per_second: 20
+    window: second
+  - name: Mutating actions
+    scope: per-account-per-region-per-action
+    applies_to: >-
+      All mutating VPN actions not separately categorised — includes CreateVpnConnection,
+      DeleteVpnConnection, ModifyVpnConnection, ModifyVpnConnectionOptions,
+      ModifyVpnTunnelOptions, ModifyVpnTunnelCertificate, CreateVpnGateway,
+      DeleteVpnGateway, AttachVpnGateway, DetachVpnGateway, CreateCustomerGateway,
+      DeleteCustomerGateway, CreateVpnConnectionRoute, DeleteVpnConnectionRoute,
+      CreateClientVpnEndpoint, ModifyClientVpnEndpoint, DeleteClientVpnEndpoint.
+    burst: 50
+    sustained_per_second: 5
+    window: second
+  - name: AuthorizeClientVpnIngress
+    scope: per-account-per-region-per-action
+    applies_to: AuthorizeClientVpnIngress
+    burst: 5
+    sustained_per_second: 2
+    window: second
+    note: Uncategorized action with its own bucket — far tighter than the mutating default.
+  - name: RevokeClientVpnIngress
+    scope: per-account-per-region-per-action
+    applies_to: RevokeClientVpnIngress
+    burst: 5
+    sustained_per_second: 2
+    window: second
+  - name: CreateClientVpnRoute
+    scope: per-account-per-region-per-action
+    applies_to: CreateClientVpnRoute
+    burst: 5
+    sustained_per_second: 2
+    window: second
+  - name: DeleteClientVpnRoute
+    scope: per-account-per-region-per-action
+    applies_to: DeleteClientVpnRoute
+    burst: 5
+    sustained_per_second: 2
+    window: second
+  - name: Console non-mutating actions
+    scope: per-account-per-region-per-action
+    applies_to: Describe*/List*/Search*/Get* called from the Amazon EC2 console.
+    burst: 100
+    sustained_per_second: 10
+    window: second
+resource_quotas:
+  source: https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-limits.html
+  entries:
+    - name: Customer gateways per Region
+      default: 50
+      adjustable: true
+    - name: Virtual private gateways per Region
+      default: 5
+      adjustable: true
+    - name: Site-to-Site VPN connections per Region
+      default: 50
+      adjustable: true
+    - name: Site-to-Site VPN connections per virtual private gateway
+      default: 10
+      adjustable: true
+    - name: Accelerated Site-to-Site VPN connections per Region
+      default: 10
+      adjustable: true
+    - name: Site-to-Site VPN Concentrators per Region
+      default: 50
+      adjustable: true
+    - name: Dynamic routes advertised from a customer gateway device to a VPN connection on a virtual private gateway
+      default: 100
+      adjustable: false
+    - name: Dynamic routes advertised from a customer gateway device to a VPN connection on a transit gateway
+      default: 1000
+      adjustable: false
+    - name: Routes advertised from a VPN connection on a transit gateway to a customer gateway device
+      default: 5000
+      adjustable: false
+    - name: Maximum bandwidth per VPN Concentrator VPN tunnel
+      default: Up to 100 Mbps
+      adjustable: false
+    - name: Maximum packets per second per VPN Concentrator VPN tunnel
+      default: Up to 10000
+      adjustable: false
+monitoring:
+  cloudwatch: true
+  service_quotas_console: https://console.aws.amazon.com/servicequotas/home/services/ec2/quotas/
+  increase_process: >-
+    AWS Support case — Account and billing / General Info and Getting Started. AWS
+    recommends requesting at most 3x the existing limit per request and raising refill
+    rate before bucket capacity.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

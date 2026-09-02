@@ -1,9 +1,11 @@
-generated: '2026-07-11'
+generated: '2026-09-01'
 method: searched
 probe: true
 source: https://aws.amazon.com/compliance/
 url: https://aws.amazon.com/compliance/
 certifications:
+- SOC 2
+- ISO 27001
 - PCI DSS
 - HIPAA
 - FedRAMP
@@ -18,3 +20,7 @@ evidence:
   - trust center
   - compliance certification
   - gdpr
+programs_url: https://aws.amazon.com/compliance/programs/
+note: Certifications are held by Amazon Web Services and AWS VPN is an in-scope service; there is no VPN-specific
+  certification. SOC 2 and ISO 27001 added from the AWS compliance programs page, which the keyword probe
+  on aws.amazon.com/compliance/ did not surface.

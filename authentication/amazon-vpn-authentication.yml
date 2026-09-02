@@ -1,16 +1,127 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/amazon-vpn-openapi.yml
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html
+docs:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/CommonParameters.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/security-iam.html
+  - https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html
+derived_from: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
 summary:
   types:
   - apiKey
   api_key_in:
   - header
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  note: >-
+    The OpenAPI models SigV4 as `apiKey in header Authorization`, which is the closest
+    OpenAPI 3.x can express. It is not a static API key: the Authorization header carries
+    an AWS4-HMAC-SHA256 signature computed per request over a canonical request, a
+    credential scope (date/region/service) and a derived signing key.
 schemes:
 - name: SigV4
   type: apiKey
   in: header
   parameter: Authorization
+  algorithm: AWS4-HMAC-SHA256
   description: AWS Signature Version 4 signed request.
+  credential_scope: <date>/<region>/ec2/aws4_request
+  required_headers: [Authorization, X-Amz-Date, Host]
+  optional_headers: [X-Amz-Security-Token]
   sources:
-  - openapi/amazon-vpn-openapi.yml
+  - openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+credential_types:
+  - kind: long-lived-access-key
+    identifier_prefix: AKIA
+    note: IAM user access key ID and secret. AWS discourages these in favour of roles.
+  - kind: temporary-credentials
+    identifier_prefix: ASIA
+    extra_header: X-Amz-Security-Token
+    note: STS session credentials from an assumed role or IAM Identity Center. Expire; ExpiredTokenException on reuse.
+authorization:
+  model: aws-iam-policy
+  scopes: false
+  scopes_note: >-
+    There is no OAuth scope surface on this API — which is why scopes/ is absent from
+    this repo rather than empty. Authorization is IAM policy evaluated per request
+    against action-level permissions.
+  permission_namespace: 'ec2:'
+  permissions_reference: https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html
+  vpn_permissions:
+    - ec2:CreateVpnConnection
+    - ec2:DescribeVpnConnections
+    - ec2:DeleteVpnConnection
+    - ec2:ModifyVpnConnection
+    - ec2:ModifyVpnConnectionOptions
+    - ec2:ModifyVpnTunnelCertificate
+    - ec2:ModifyVpnTunnelOptions
+    - ec2:CreateVpnConnectionRoute
+    - ec2:DeleteVpnConnectionRoute
+    - ec2:CreateCustomerGateway
+    - ec2:DescribeCustomerGateways
+    - ec2:DeleteCustomerGateway
+    - ec2:CreateVpnGateway
+    - ec2:DescribeVpnGateways
+    - ec2:DeleteVpnGateway
+    - ec2:AttachVpnGateway
+    - ec2:DetachVpnGateway
+    - ec2:EnableVgwRoutePropagation
+    - ec2:DisableVgwRoutePropagation
+    - ec2:CreateClientVpnEndpoint
+    - ec2:DescribeClientVpnEndpoints
+    - ec2:DeleteClientVpnEndpoint
+    - ec2:ModifyClientVpnEndpoint
+    - ec2:AssociateClientVpnTargetNetwork
+    - ec2:DisassociateClientVpnTargetNetwork
+    - ec2:AuthorizeClientVpnIngress
+    - ec2:RevokeClientVpnIngress
+    - ec2:ImportClientVpnClientCertificateRevocationList
+    - ec2:ExportClientVpnClientCertificateRevocationList
+    - ec2:CreateClientVpnRoute
+    - ec2:DeleteClientVpnRoute
+    - ec2:DescribeClientVpnConnections
+    - ec2:TerminateClientVpnConnections
+  service_linked_role: AWSServiceRoleForVPCS2SVPN
+  managed_policy: AWSVPCS2SVpnServiceRolePolicy
+  managed_policy_docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/s2s-security-iam-awsmanpol.html
+permission_check:
+  parameter: DryRun
+  success_error: DryRunOperation
+  failure_error: UnauthorizedOperation
+  note: The API ships a first-class way to test authorization without acting. See conventions/amazon-vpn-conventions.yml.
+auth_failures:
+  - code: AuthFailure
+    status: 401
+    cause: Unsigned request. Observed live on 2026-09-01 across every /.well-known/ probe of ec2.amazonaws.com.
+  - code: IncompleteSignature
+    status: 400
+    cause: Malformed SigV4 signature.
+  - code: MissingAuthenticationToken
+    status: 403
+    cause: No credentials presented.
+  - code: ExpiredTokenException
+    status: 403
+    cause: STS session credentials expired.
+  - code: UnrecognizedClientException
+    status: 403
+    cause: Access key ID not recognised.
+  - code: AccessDeniedException
+    status: 403
+    cause: Credentials valid, IAM policy does not permit the action.
+tunnel_authentication:
+  note: >-
+    Distinct from API authentication — this is how the VPN tunnel itself authenticates,
+    and it is a separate concern an agent must not conflate with the API credential.
+  options:
+    - kind: pre-shared-key
+      default: true
+      storage: [site-to-site-vpn-service, aws-secrets-manager]
+      secrets_manager_since: '2025-05-27'
+    - kind: private-certificate
+      authority: AWS Private Certificate Authority
+      docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-tunnel-authentication-options.html
+    - kind: client-vpn-mutual-authentication
+      scope: AWS Client VPN
+      note: X.509 server and client certificates in AWS Certificate Manager, generated with OpenVPN easy-rsa.

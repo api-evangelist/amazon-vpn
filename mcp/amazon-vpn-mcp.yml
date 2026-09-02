@@ -1,0 +1,97 @@
+generated: '2026-09-01'
+method: searched
+status: published
+source: >-
+  https://knowledge-mcp.global.api.aws/mcp (live JSON-RPC tools/list + initialize, HTTP 200,
+  probed 2026-09-01) and https://github.com/awslabs/mcp (AWS Labs MCP monorepo, README of
+  src/aws-network-mcp-server and src/aws-api-mcp-server)
+note: >-
+  AWS VPN does not ship a VPN-specific MCP server. Amazon Web Services — the owner of
+  this product — ships account-wide MCP servers that reach the VPN surface, and those
+  are recorded here with the scope stated plainly rather than implied. The remote
+  AWS Knowledge MCP server is anonymous and answered tools/list live; the two local
+  stdio servers from awslabs/mcp are what actually call the VPN operations, and they
+  require AWS credentials on the machine running them.
+deployment:
+  mode: both
+  endpoint: https://knowledge-mcp.global.api.aws/mcp
+  install: uvx awslabs.aws-network-mcp-server@latest
+  package: https://pypi.org/project/awslabs.aws-network-mcp-server/
+  auth: none
+  verified: probed
+  note: >-
+    `auth: none` describes the REMOTE endpoint only — knowledge-mcp.global.api.aws
+    accepted an unauthenticated initialize and tools/list. The local stdio servers
+    resolve AWS credentials from the host environment (SigV4 / IAM), so their
+    effective auth is api-key-equivalent at the machine, not at the MCP transport.
+servers:
+  - name: AWSKnowledgeMCP
+    vendor: Amazon Web Services
+    transport: http
+    url: https://knowledge-mcp.global.api.aws/mcp
+    auth: none
+    scope: aws-wide
+    version: 1.0.0
+    protocol_version: '2025-03-26'
+    verified: probed
+    evidence:
+      method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+      http_status: 200
+      content_type: application/json
+      fetched: '2026-09-01'
+      tools_file: amazon-vpn-aws-knowledge-mcp-tools.json
+    note: >-
+      Documentation-retrieval server. It does not call the VPN API; it reads the AWS
+      docs corpus, which includes the Site-to-Site VPN and Client VPN guides and the
+      EC2 API Reference.
+    tools:
+      - name: aws___read_documentation
+        description: Fetch full AWS doc pages as markdown.
+        input: [requests]
+      - name: aws___search_documentation
+        description: AWS docs search; each result carries verbatim page text.
+        input: [limit, search_phrase, topics]
+      - name: aws___list_regions
+        description: Retrieve a list of all AWS regions.
+        input: []
+      - name: aws___get_regional_availability
+        description: AWS resource availability per region.
+        input: [regions, resource_type, filters, next_token, region]
+      - name: aws___retrieve_skill
+        description: Retrieve an AWS skill (workflows, references). Returns SKILL.md.
+        input: [file, skill_name]
+  - name: awslabs.aws-network-mcp-server
+    vendor: Amazon Web Services (AWS Labs)
+    transport: stdio
+    install: uvx awslabs.aws-network-mcp-server@latest
+    package: https://pypi.org/project/awslabs.aws-network-mcp-server/
+    version: 0.0.16
+    published: '2026-08-26'
+    repository: https://github.com/awslabs/mcp/tree/main/src/aws-network-mcp-server
+    auth: api-key
+    scope: aws-networking
+    verified: searched
+    note: >-
+      Read-only network troubleshooting server covering Cloud WAN, Transit Gateway, VPC,
+      Network Firewall and VPN. Its one VPN tool is list_vpn_connections. Runs locally
+      only — the README states it can only be run on the same host as the LLM client.
+    tools_vpn:
+      - name: list_vpn_connections
+        description: List all Site-to-Site VPN connections in a region.
+  - name: awslabs.aws-api-mcp-server
+    vendor: Amazon Web Services (AWS Labs)
+    transport: stdio
+    install: uvx awslabs.aws-api-mcp-server@latest
+    package: https://pypi.org/project/awslabs.aws-api-mcp-server/
+    version: 1.5.4
+    published: '2026-09-01'
+    repository: https://github.com/awslabs/mcp/tree/main/src/aws-api-mcp-server
+    docs: https://awslabs.github.io/mcp/servers/aws-api-mcp-server/
+    auth: api-key
+    scope: aws-wide
+    verified: searched
+    note: >-
+      Generic AWS CLI executor. It reaches every VPN operation indirectly by running
+      `aws ec2 create-vpn-connection`, `aws ec2 describe-vpn-connections`, etc. It has
+      no VPN-named tools of its own, which is why the crosswalk records it as a
+      generic binding rather than a per-operation one.

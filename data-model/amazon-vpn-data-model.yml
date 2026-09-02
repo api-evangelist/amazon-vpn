@@ -1,0 +1,169 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+enriched_from:
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_VpnConnection.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CustomerGateway.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ClientVpnEndpoint.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/how_it_works.html
+note: >-
+  The OpenAPI in this repo models the whole VPN surface as one operation with an Action
+  discriminator, so there are no components.schemas to walk for $refs. The entity graph
+  below is derived from the 33 Action names and the id-reference parameters they take
+  (VpnConnectionId, VpnGatewayId, CustomerGatewayId, ClientVpnEndpointId, VpcId,
+  SubnetId), cross-checked against the EC2 API Reference data-type pages. Every id prefix
+  recorded is one AWS publishes.
+entities:
+  - name: VpnConnection
+    id_prefix: vpn-
+    domain: site-to-site-vpn
+    description: A managed IPsec VPN connection with two tunnels, between a customer gateway and an AWS-side gateway.
+    created_by: CreateVpnConnection
+    read_by: DescribeVpnConnections
+    updated_by: [ModifyVpnConnection, ModifyVpnConnectionOptions, ModifyVpnTunnelOptions, ModifyVpnTunnelCertificate]
+    deleted_by: DeleteVpnConnection
+  - name: VpnTunnel
+    id_prefix: null
+    domain: site-to-site-vpn
+    description: >-
+      One of exactly two tunnels inside a VpnConnection, each terminating on a different
+      AWS Availability Zone and carrying its own public IP and pre-shared key. Not
+      independently addressable — identified by its outside IP address on the modify calls.
+    updated_by: [ModifyVpnTunnelOptions, ModifyVpnTunnelCertificate]
+  - name: CustomerGateway
+    id_prefix: cgw-
+    domain: site-to-site-vpn
+    description: The on-premises side of the VPN — an anchor for the customer device's public IP and BGP ASN.
+    created_by: CreateCustomerGateway
+    read_by: DescribeCustomerGateways
+    deleted_by: DeleteCustomerGateway
+  - name: VpnGateway
+    id_prefix: vgw-
+    domain: site-to-site-vpn
+    description: Virtual private gateway — the AWS side of a VPN connection, attachable to one VPC at a time.
+    created_by: CreateVpnGateway
+    read_by: DescribeVpnGateways
+    deleted_by: DeleteVpnGateway
+  - name: VpnConnectionRoute
+    id_prefix: null
+    domain: site-to-site-vpn
+    description: A static route (destination CIDR) on a VPN connection, for customer gateways that do not run BGP.
+    created_by: CreateVpnConnectionRoute
+    deleted_by: DeleteVpnConnectionRoute
+  - name: ClientVpnEndpoint
+    id_prefix: cvpn-endpoint-
+    domain: client-vpn
+    description: A managed OpenVPN-based remote-access endpoint for client devices.
+    created_by: CreateClientVpnEndpoint
+    read_by: DescribeClientVpnEndpoints
+    updated_by: ModifyClientVpnEndpoint
+    deleted_by: DeleteClientVpnEndpoint
+  - name: ClientVpnTargetNetworkAssociation
+    id_prefix: cvpn-assoc-
+    domain: client-vpn
+    description: The association of a VPC subnet with a Client VPN endpoint; the endpoint's path into the VPC.
+    created_by: AssociateClientVpnTargetNetwork
+    deleted_by: DisassociateClientVpnTargetNetwork
+  - name: ClientVpnAuthorizationRule
+    id_prefix: null
+    domain: client-vpn
+    description: A rule granting a client group access to a destination network through the endpoint.
+    created_by: AuthorizeClientVpnIngress
+    deleted_by: RevokeClientVpnIngress
+  - name: ClientVpnRoute
+    id_prefix: null
+    domain: client-vpn
+    description: A route on the Client VPN endpoint route table.
+    created_by: CreateClientVpnRoute
+    deleted_by: DeleteClientVpnRoute
+  - name: ClientVpnConnection
+    id_prefix: cvpn-connection-
+    domain: client-vpn
+    description: An active client session on a Client VPN endpoint. Runtime state, not configuration.
+    read_by: DescribeClientVpnConnections
+    deleted_by: TerminateClientVpnConnections
+  - name: ClientCertificateRevocationList
+    id_prefix: null
+    domain: client-vpn
+    description: The CRL applied to a Client VPN endpoint for mutual-certificate authentication.
+    created_by: ImportClientVpnClientCertificateRevocationList
+    read_by: ExportClientVpnClientCertificateRevocationList
+  - name: Vpc
+    id_prefix: vpc-
+    domain: external
+    description: Amazon VPC. Referenced by this surface but managed elsewhere in the EC2 API.
+  - name: Subnet
+    id_prefix: subnet-
+    domain: external
+    description: VPC subnet. Referenced by Client VPN target-network associations.
+  - name: TransitGateway
+    id_prefix: tgw-
+    domain: external
+    description: >-
+      Alternative AWS-side attachment point for a VPN connection, in place of a virtual
+      private gateway. Required for Large Bandwidth Tunnels.
+  - name: RouteTable
+    id_prefix: rtb-
+    domain: external
+    description: VPC route table that receives propagated VPN routes.
+relationships:
+  - from: VpnConnection
+    to: CustomerGateway
+    kind: belongs_to
+    via: CustomerGatewayId
+  - from: VpnConnection
+    to: VpnGateway
+    kind: belongs_to
+    via: VpnGatewayId
+    note: Mutually exclusive with TransitGatewayId.
+  - from: VpnConnection
+    to: TransitGateway
+    kind: belongs_to
+    via: TransitGatewayId
+  - from: VpnConnection
+    to: VpnTunnel
+    kind: has_many
+    cardinality: exactly 2
+  - from: VpnConnection
+    to: VpnConnectionRoute
+    kind: has_many
+    via: VpnConnectionId
+  - from: VpnGateway
+    to: Vpc
+    kind: has_one
+    via: VpcId
+    note: Attached by AttachVpnGateway, released by DetachVpnGateway. One VPC at a time.
+  - from: VpnGateway
+    to: RouteTable
+    kind: has_many
+    via: RouteTableId
+    note: Route propagation toggled by EnableVgwRoutePropagation / DisableVgwRoutePropagation.
+  - from: ClientVpnEndpoint
+    to: ClientVpnTargetNetworkAssociation
+    kind: has_many
+    via: ClientVpnEndpointId
+  - from: ClientVpnTargetNetworkAssociation
+    to: Subnet
+    kind: belongs_to
+    via: SubnetId
+  - from: ClientVpnEndpoint
+    to: ClientVpnAuthorizationRule
+    kind: has_many
+    via: ClientVpnEndpointId
+  - from: ClientVpnEndpoint
+    to: ClientVpnRoute
+    kind: has_many
+    via: ClientVpnEndpointId
+  - from: ClientVpnEndpoint
+    to: ClientVpnConnection
+    kind: has_many
+    via: ClientVpnEndpointId
+  - from: ClientVpnEndpoint
+    to: ClientCertificateRevocationList
+    kind: has_one
+    via: ClientVpnEndpointId
+coverage:
+  entities: 15
+  entities_in_scope: 11
+  entities_external: 4
+  relationships: 13

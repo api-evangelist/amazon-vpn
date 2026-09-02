@@ -36,9 +36,13 @@ tags:
   - Networking
   - Security
   - VPN
+  - IPsec
+  - Hybrid Cloud
+  - Connectivity
+  - Infrastructure
 url: https://raw.githubusercontent.com/api-evangelist/amazon-vpn/refs/heads/main/apis.yml
 created: '2026-03-16'
-modified: '2026-04-19'
+modified: '2026-09-01'
 specificationVersion: '0.23'
 apis:
 - aid: amazon-vpn:aws-vpn-api
@@ -58,7 +62,7 @@ apis:
   - type: Documentation
     url: https://docs.aws.amazon.com/vpn/latest/s2svpn/
   - type: APIReference
-    url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/OperationList-query-vpn.html
+    url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Operations.html
   - type: GettingStarted
     url: https://docs.aws.amazon.com/vpn/latest/s2svpn/SetUpVPNConnections.html
   - type: Pricing
@@ -72,7 +76,11 @@ apis:
     (amazon ec2 query api subset).
   humanURL: https://aws.amazon.com/vpn/
   baseURL: https://ec2.amazonaws.com
-  tags: []
+  tags:
+  - AWS
+  - Networking
+  - Security
+  - VPN
   tags_raw:
   - AWS VPN API (Amazon EC2 Query API Subset)
   properties:
@@ -130,6 +138,93 @@ common:
         description: Use Amazon VPN to manage and automate cloud operations.
   - type: Integrations
     url: https://aws.amazon.com/partners/
+  - type: Packages
+    url: packages/amazon-vpn-packages.yml
+    name: AWS SDK and CLI packages carrying the VPN operations
+  - type: SDKs
+    url: packages/amazon-vpn-packages.yml
+    name: First-party AWS SDKs (EC2 clients) for AWS VPN
+  - type: WellKnown
+    url: well-known/amazon-vpn-well-known.yml
+    name: .well-known probe index (security.txt served at aws.amazon.com)
+  - type: SecurityTxt
+    url: well-known/amazon-vpn-security.txt
+    name: AWS security.txt (RFC 9116)
+  - type: Security
+    url: https://vdp.aws.security/
+    name: AWS Vulnerability Disclosure Program
+  - type: Compliance
+    url: https://aws.amazon.com/compliance/programs/
+    name: AWS compliance programs and certifications
+  - type: MCPServer
+    url: mcp/amazon-vpn-mcp.yml
+    name: AWS MCP servers reaching the VPN surface
+  - type: ToolCrosswalk
+    url: mcp/amazon-vpn-tool-crosswalk.yml
+    name: MCP tool to EC2 VPN action crosswalk
+  - type: LLMsTxt
+    url: llms/amazon-vpn-llms.txt
+    name: AWS Site-to-Site VPN llms.txt (published by AWS)
+  - type: Overlay
+    url: overlays/amazon-vpn-aws-vpn-api-overlay.yaml
+    name: API Evangelist Overlay for the AWS VPN API
+  - type: Conformance
+    url: conformance/amazon-vpn-conformance.yml
+    name: Standards conformance (API layer and IPsec/IKE/BGP domain layer)
+  - type: ErrorCatalog
+    url: errors/amazon-vpn-problem-types.yml
+    name: Amazon EC2 Query API error catalog for the VPN actions
+  - type: Lifecycle
+    url: lifecycle/amazon-vpn-lifecycle.yml
+    name: Versioning, maintenance and retired-surface record
+  - type: Conventions
+    url: conventions/amazon-vpn-conventions.yml
+    name: Cross-cutting API conventions, dry-run and reversibility
+  - type: Idempotency
+    url: conventions/amazon-vpn-conventions.yml
+    name: Idempotency contract (CreateVpnConnection by default, ClientToken on four Client VPN actions)
+  - type: ChangeLog
+    url: changelog/amazon-vpn-changelog.yml
+    name: AWS Site-to-Site VPN document history
+  - type: CLI
+    url: cli/amazon-vpn-cli.yml
+    name: AWS CLI command surface for AWS VPN (aws ec2)
+  - type: DataModel
+    url: data-model/amazon-vpn-data-model.yml
+    name: AWS VPN entity relationship graph
+  - type: AgentSkill
+    url: skills/_index.yml
+    name: Agent Skills for AWS VPN flows
+  - type: EventCatalog
+    url: asyncapi/amazon-vpn-events.yml
+    name: AWS VPN event surface (AWS Health Dashboard / EventBridge)
+  - type: Plans
+    url: plans/amazon-vpn-plans-pricing.yml
+    name: Published AWS VPN pricing
+  - type: RateLimits
+    url: rate-limits/amazon-vpn-rate-limits.yml
+    name: Amazon EC2 Query API throttling for the VPN actions
+  - type: FinOps
+    url: finops/amazon-vpn-finops.yml
+    name: FinOps framework mapping
+  - type: Examples
+    url: examples/amazon-vpn-example.json
+    name: AWS VPN request/response example
+  - type: JSONLDContext
+    url: json-ld/amazon-vpn-context.jsonld
+    name: JSON-LD context
+  - type: APIReference
+    url: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Operations.html
+    name: Amazon EC2 API Reference - Actions
+  - type: GettingStarted
+    url: https://docs.aws.amazon.com/vpn/latest/s2svpn/SetUpVPNConnections.html
+    name: Get started with Site-to-Site VPN
+  - type: Pricing
+    url: https://aws.amazon.com/vpn/pricing/
+    name: AWS VPN pricing
+  - type: Blog
+    url: https://aws.amazon.com/blogs/networking-and-content-delivery/
+    name: AWS Networking & Content Delivery Blog
 integrations:
   - name: Partner Programs
   - name: Resources
@@ -142,3 +237,11 @@ integrations:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+
+x-enrichment:
+  date: '2026-09-01'
+  status: enriched
+  artifacts_added: 21
+  pass: local-v1
+x-parent: aws
+x-relationship: product

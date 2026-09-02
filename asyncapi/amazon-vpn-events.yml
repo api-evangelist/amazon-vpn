@@ -1,0 +1,62 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-vpn-health-events.html
+docs:
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-vpn-health-events.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-overview-vpn.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/endpoint-replacements.html
+  - https://docs.aws.amazon.com/health/latest/ug/aws-health-dashboard-status.html
+spec_type: none
+asyncapi_document: null
+asyncapi_note: >-
+  AWS publishes NO AsyncAPI document for AWS VPN. None was fabricated. What AWS does
+  publish is a documented, account-scoped push-event surface, catalogued below.
+delivery:
+  mechanism: aws-health-dashboard + amazon-eventbridge
+  http_callbacks: false
+  subscription_model: >-
+    Events are emitted into the authenticated AWS Health Dashboard for the account and
+    are routable with Amazon EventBridge rules. There is no provider-side webhook
+    registration API — the consumer creates an EventBridge rule and chooses the target
+    (SNS, Lambda, an HTTPS API destination). This is a real event surface, but it is
+    NOT an HTTP webhook the provider posts to a URL you register with them, and it is
+    recorded that way deliberately.
+  requires_authentication: true
+  vpn_specific_registration_api: false
+events:
+  - name: Tunnel endpoint replacement notification
+    trigger: >-
+      One or both VPN tunnel endpoints in a connection are replaced, either because AWS
+      performed a tunnel update or because the customer modified the VPN connection.
+    timing: Sent when the replacement completes.
+    channel: AWS Health Dashboard event
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-vpn-health-events.html#tunnel-replacement-notifications
+    agent_relevance: >-
+      A tunnel endpoint replacement drops the tunnel. This is the event an agent
+      operating a VPN needs in order to correlate a connectivity dip with a planned change
+      rather than a fault.
+  - name: VPN single tunnel notification
+    trigger: >-
+      A VPN connection has one tunnel up and the other down for more than one hour in a day.
+    timing: >-
+      A monthly event, updated daily as new single-tunnel connections are detected, with
+      notifications sent weekly. A new event is created each month, clearing connections
+      no longer detected as single tunnel.
+    channel: AWS Health Dashboard event
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-vpn-health-events.html#single-tunnel-notifications
+    agent_relevance: Redundancy-degradation signal — the connection still works, on one tunnel.
+metrics:
+  mechanism: amazon-cloudwatch
+  since: '2017-05-15'
+  docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-overview-vpn.html
+  note: >-
+    CloudWatch metrics for VPN connections are a poll surface rather than a push one, and
+    are recorded here for completeness rather than counted as an event channel.
+logs:
+  mechanism: amazon-cloudwatch-logs
+  since: '2022-12-09'
+  price: no additional charge for VPN logs; standard CloudWatch Logs rates apply
+coverage:
+  event_count: 2
+  asyncapi_spec: false
+  webhook_registration_api: false

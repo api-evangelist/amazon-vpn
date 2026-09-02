@@ -1,0 +1,149 @@
+generated: '2026-09-01'
+method: derived
+source: >-
+  mcp/amazon-vpn-mcp.yml (live tools/list from knowledge-mcp.global.api.aws plus the
+  awslabs/mcp READMEs) bound against
+  openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+note: >-
+  The Amazon EC2 Query API models every VPN operation as one HTTP POST to `/` with an
+  `Action` discriminator, so the OpenAPI carries a single operationId (invokeVpnAction)
+  and 33 real action values. Binding therefore names the operationId AND the Action
+  value it must carry; the Action value is the unit a caller actually selects. No tool
+  is invented — the two AWS stdio servers below are the only MCP surfaces that reach
+  these actions, and the remote AWS Knowledge MCP server reaches none of them.
+surfaces:
+  openapi:
+    file: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+    operations: 1
+    actions: 33
+    gated: false
+  graphql:
+    endpoint: null
+    note: AWS VPN publishes no GraphQL surface.
+  mcp:
+    - url: https://knowledge-mcp.global.api.aws/mcp
+      gated: false
+      tools_listed: 5
+      note: tools/list returned 200 anonymously; the tool set is documentation retrieval only.
+    - package: awslabs.aws-network-mcp-server
+      transport: stdio
+      gated: true
+      note: >-
+        Tool list read from the published README, not from a live tools/list — the server
+        runs locally and needs AWS credentials, so input schemas would require
+        authenticated introspection on a configured host.
+    - package: awslabs.aws-api-mcp-server
+      transport: stdio
+      gated: true
+      note: Same — local stdio, credentials required.
+crosswalk:
+  - tool: list_vpn_connections
+    server: awslabs.aws-network-mcp-server
+    category: site-to-site-vpn
+    rest: [invokeVpnAction]
+    action: DescribeVpnConnections
+    binding: rest
+    confidence: high
+    note: >-
+      Named 1:1 against the EC2 action. Read-only; the server README states the whole
+      server performs read-only operations.
+  - tool: call_aws
+    server: awslabs.aws-api-mcp-server
+    category: generic-aws-cli
+    rest: [invokeVpnAction]
+    action: "*"
+    binding: rest
+    confidence: low
+    note: >-
+      Generic binding, not an operation-level one. The server executes AWS CLI commands,
+      so it can reach all 33 VPN actions via `aws ec2 <verb>-vpn-*` / `<verb>-client-vpn-*`,
+      but it exposes no VPN-named tool and no per-action inputSchema. Confidence is low
+      on purpose: an agent cannot discover the VPN surface from this tool's schema.
+mcp_only:
+  - tool: aws___read_documentation
+    server: AWSKnowledgeMCP
+    reason: Documentation retrieval over docs.aws.amazon.com; no backing VPN API operation.
+  - tool: aws___search_documentation
+    server: AWSKnowledgeMCP
+    reason: Documentation search; no backing VPN API operation.
+  - tool: aws___list_regions
+    server: AWSKnowledgeMCP
+    reason: >-
+      Region metadata served by the knowledge gateway. The EC2 API's own DescribeRegions
+      is outside this repo's VPN subset spec, so there is no operation here to bind to.
+  - tool: aws___get_regional_availability
+    server: AWSKnowledgeMCP
+    reason: Region/resource availability metadata; no backing VPN API operation.
+  - tool: aws___retrieve_skill
+    server: AWSKnowledgeMCP
+    reason: >-
+      Returns AWS-authored SKILL.md documents from the Agent Toolkit for AWS catalog.
+      A skill-distribution surface, not an API operation.
+  - tool: get_path_trace_methodology
+    server: awslabs.aws-network-mcp-server
+    reason: Server-side troubleshooting playbook; composite, no single REST operation.
+  - tool: get_vpc_flow_logs
+    server: awslabs.aws-network-mcp-server
+    reason: >-
+      Reads CloudWatch Logs, not the EC2 VPN API. Listed to record the divergence — an
+      agent troubleshooting a VPN through this server leaves the VPN contract entirely.
+rest_only:
+  - capability: Site-to-Site VPN connection lifecycle
+    actions:
+      - CreateVpnConnection
+      - DeleteVpnConnection
+      - ModifyVpnConnection
+      - ModifyVpnConnectionOptions
+  - capability: VPN tunnel configuration
+    actions:
+      - ModifyVpnTunnelCertificate
+      - ModifyVpnTunnelOptions
+  - capability: Static VPN routing
+    actions:
+      - CreateVpnConnectionRoute
+      - DeleteVpnConnectionRoute
+      - EnableVgwRoutePropagation
+      - DisableVgwRoutePropagation
+  - capability: Customer gateways
+    actions:
+      - CreateCustomerGateway
+      - DescribeCustomerGateways
+      - DeleteCustomerGateway
+  - capability: Virtual private gateways
+    actions:
+      - CreateVpnGateway
+      - DescribeVpnGateways
+      - DeleteVpnGateway
+      - AttachVpnGateway
+      - DetachVpnGateway
+  - capability: Client VPN endpoints
+    actions:
+      - CreateClientVpnEndpoint
+      - DescribeClientVpnEndpoints
+      - DeleteClientVpnEndpoint
+      - ModifyClientVpnEndpoint
+      - AssociateClientVpnTargetNetwork
+      - DisassociateClientVpnTargetNetwork
+  - capability: Client VPN authorization and routing
+    actions:
+      - AuthorizeClientVpnIngress
+      - RevokeClientVpnIngress
+      - CreateClientVpnRoute
+      - DeleteClientVpnRoute
+      - ImportClientVpnClientCertificateRevocationList
+      - ExportClientVpnClientCertificateRevocationList
+  - capability: Client VPN sessions
+    actions:
+      - DescribeClientVpnConnections
+      - TerminateClientVpnConnections
+coverage:
+  tools_named: 8
+  tools_bound: 2
+  mcp_only: 7
+  rest_actions_total: 33
+  rest_actions_with_a_named_tool: 1
+  rest_actions_reachable_generically: 33
+  finding: >-
+    Exactly one of 33 VPN actions (DescribeVpnConnections) has a purpose-built MCP tool.
+    The other 32 are reachable only by an agent that already knows the AWS CLI verb and
+    drives the generic call_aws executor, which publishes no schema for them.

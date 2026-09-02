@@ -1,0 +1,92 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/vpn/latest/s2svpn/WhatsNew.html
+docs:
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/WhatsNew.html
+  - https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/WhatsNew.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/endpoint-replacements.html
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/tunnel-endpoint-lifecycle.html
+  - https://aws.amazon.com/legal/service-level-agreements/
+versioning:
+  scheme: date-stamped-api-version-parameter
+  current: '2016-11-15'
+  parameter: Version
+  docs: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html
+  note: >-
+    The EC2 API version has not changed since 2016-11-15. VPN capability is added
+    additively — new actions and new parameters appear under the same version string, so
+    a client pinned to 2016-11-15 keeps working while new features are simply invisible
+    to it. There is no version negotiation and no version deprecation schedule for
+    the Query API itself.
+deprecation:
+  policy_url: https://aws.amazon.com/legal/service-terms/
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    AWS publishes no RFC 8594 Sunset/Deprecation header support on the EC2 Query API and
+    no VPN-specific deprecation policy page. Deprecations are announced in the service
+    documentation history and in the AWS What's New feed; the contractual basis for
+    service discontinuation is the AWS Service Terms. This is a real gap: an agent
+    cannot learn from a response that an action is going away.
+  retired_surfaces:
+    - name: Amazon EC2 SOAP API
+      contract: https://s3.amazonaws.com/ec2-downloads/ec2.wsdl
+      api_version: '2014-02-01'
+      status: discontinued
+      probed: '2026-09-01'
+      http_status: 200
+      note: >-
+        A 349 KB WSDL for the EC2 SOAP API — 312 operations including CreateVpnConnection,
+        DescribeVpnConnections, CreateVpnGateway, AttachVpnGateway — is still served from
+        the AWS-owned S3 bucket s3.amazonaws.com/ec2-downloads. It is NOT saved into
+        wsdl/ in this repo and carries no contract pointer, because AWS discontinued SOAP
+        support for EC2 and the regional endpoints reject it: ec2.amazonaws.com returns
+        InvalidAction for /doc/2016-11-15/AmazonEC2.wsdl and /doc/2014-02-01/AmazonEC2.wsdl.
+        Recorded here so a later sweep does not rediscover it and credit it as a live
+        contract.
+    - name: Classic VPN
+      status: removed
+      date: '2023-01-19'
+      note: Classic VPN information was removed from the Site-to-Site VPN User Guide.
+sla:
+  url: https://aws.amazon.com/legal/service-level-agreements/
+  note: >-
+    AWS Site-to-Site VPN is covered by the Amazon Compute Service Level Agreement.
+    No VPN-specific uptime percentage is published on the product pages.
+status_page: https://health.aws.amazon.com/health/status
+status_page_note: >-
+  AWS Health Dashboard — Service health. AWS Site-to-Site VPN additionally pushes
+  account-scoped events (tunnel endpoint replacement, single-tunnel notifications) into
+  the authenticated Health Dashboard; see asyncapi/amazon-vpn-events.yml.
+maintenance:
+  tunnel_endpoint_replacement:
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/endpoint-replacements.html
+    note: >-
+      AWS replaces VPN tunnel endpoints during updates and after customer modifications.
+      A replacement drops the tunnel.
+  customer_controlled_maintenance:
+    feature: Tunnel endpoint lifecycle control
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/tunnel-endpoint-lifecycle.html
+    operations_docs:
+      - https://docs.aws.amazon.com/vpn/latest/s2svpn/enable-elc.html
+      - https://docs.aws.amazon.com/vpn/latest/s2svpn/view-elc-status.html
+      - https://docs.aws.amazon.com/vpn/latest/s2svpn/view-elc-updates.html
+      - https://docs.aws.amazon.com/vpn/latest/s2svpn/accept-update.html
+      - https://docs.aws.amazon.com/vpn/latest/s2svpn/turn-elc-off.html
+    note: >-
+      Opt-in control that lets the customer check for available tunnel updates and accept
+      them on their own schedule rather than having AWS apply them. This is an unusual and
+      genuinely agent-relevant lifecycle surface — the provider hands the maintenance
+      window to the caller.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation in
+  openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml carries
+  deprecated: true, and none of the 33 Action values is marked deprecated in the EC2 API
+  Reference.
+sdk_lifecycle:
+  - package: aws-sdk (JavaScript v2)
+    status: maintenance
+    end_of_support: '2025-09-08'
+    successor: "@aws-sdk/client-ec2"
+    note: See packages/amazon-vpn-packages.yml — last release 2025-12-09.

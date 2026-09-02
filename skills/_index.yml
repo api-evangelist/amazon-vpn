@@ -1,0 +1,68 @@
+generated: '2026-09-01'
+method: generated
+source: >-
+  Grounded in the 33 Action values enumerated in
+  openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml, plus the
+  published semantics captured in conventions/, errors/, rate-limits/ and lifecycle/.
+  Every action name in every skill is verbatim from the spec's Action enum; none was
+  invented.
+provider_published_skills:
+  found: false
+  lead: >-
+    AWS DOES publish reusable agent skills for AWS VPN, distributed through the Agent
+    Toolkit for AWS rather than over HTTP. Its own VPN documentation pages say so:
+    "AWS publishes reusable skills for AWS VPN. To see which apply, search the Agent
+    Toolkit for AWS catalog with `aws agent-toolkit search-skills --search-query vpn`."
+    The AWS Knowledge MCP server exposes a matching `aws___retrieve_skill` tool.
+  probe: >-
+    knowledge-mcp.global.api.aws answered initialize and tools/list over plain HTTP on
+    2026-09-01 but rejected tools/call with
+    {"success":false,"error":"Http operation is not supported for gateway protocol type MCP"} —
+    the gateway requires an SSE stream for calls. The AWS skill documents were therefore
+    NOT retrieved, and none is reproduced here. A future pass with an SSE-capable MCP
+    client, or a machine with the AWS CLI 2.35.0+ installed, can fetch them and upgrade
+    these files from generated to searched.
+  references:
+    - https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html
+    - https://docs.aws.amazon.com/vpn/latest/s2svpn/WhatsNew.html
+skills:
+  - file: amazon-vpn-create-site-to-site-vpn.md
+    name: Create an AWS Site-to-Site VPN connection
+    api: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+    operations: [invokeVpnAction]
+    actions:
+      - CreateCustomerGateway
+      - CreateVpnGateway
+      - AttachVpnGateway
+      - CreateVpnConnection
+      - DescribeVpnConnections
+      - EnableVgwRoutePropagation
+  - file: amazon-vpn-create-client-vpn-endpoint.md
+    name: Create and authorize an AWS Client VPN endpoint
+    api: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+    operations: [invokeVpnAction]
+    actions:
+      - CreateClientVpnEndpoint
+      - AssociateClientVpnTargetNetwork
+      - AuthorizeClientVpnIngress
+      - CreateClientVpnRoute
+      - DescribeClientVpnEndpoints
+  - file: amazon-vpn-rotate-tunnel-options.md
+    name: Change AWS Site-to-Site VPN tunnel options safely
+    api: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+    operations: [invokeVpnAction]
+    actions:
+      - DescribeVpnConnections
+      - ModifyVpnTunnelOptions
+      - ModifyVpnTunnelCertificate
+      - ModifyVpnConnectionOptions
+  - file: amazon-vpn-audit-vpn-inventory.md
+    name: Audit AWS VPN inventory in a Region
+    api: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+    operations: [invokeVpnAction]
+    actions:
+      - DescribeVpnConnections
+      - DescribeVpnGateways
+      - DescribeCustomerGateways
+      - DescribeClientVpnEndpoints
+      - DescribeClientVpnConnections

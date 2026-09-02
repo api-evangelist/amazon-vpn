@@ -4,147 +4,189 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Amazon VPN
 providerId: amazon-vpn
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-01'
+generated: '2026-09-01'
+method: searched
+source: https://aws.amazon.com/vpn/pricing/
+note: >-
+  Replaces the 2026-05-04 bulk-sweep scaffold, which invented Free / Professional /
+  Enterprise tiers with placeholder request quotas. AWS VPN has no tiered plans and no
+  free tier: it is metered pay-as-you-go, billed per connection-hour and per GB of data
+  transfer out, with no charge for API calls themselves. Prices below are the published
+  US list prices read from the pricing page on 2026-09-01; AWS prices vary by Region, so
+  each entry records the price as published rather than as a global constant.
 tags:
   - AWS
   - Networking
   - Security
   - VPN
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
+description: >-
+  Published AWS VPN pricing. Two product lines are billed separately — AWS Site-to-Site
+  VPN (per VPN connection-hour, with a Concentrator and a 5 Gbps large-bandwidth
+  variant) and AWS Client VPN (per endpoint-association-hour plus per active client
+  connection-hour). Data transfer out of AWS is charged on the standard EC2 tiered
+  schedule; API requests to the EC2 Query API that manage VPN resources are not charged.
+pricing_model: pay-as-you-go
+free_tier: false
+currency: USD
+plan_count: 5
 plans:
-  - id: amazon-vpn-free
-    name: Free
-    type: freemium
-    description: Free entry tier for the Amazon VPN API surface. Intended for evaluation, prototyping,
-      and low-volume integrations. Real limits and pricing must be reconciled with the provider's published
-      plan documentation.
+  - id: amazon-vpn-site-to-site
+    name: AWS Site-to-Site VPN (standard, up to 1.25 Gbps)
+    type: metered
+    description: >-
+      Managed IPsec VPN connection between an on-premises network and an Amazon VPC,
+      transit gateway or Cloud WAN. Billed for each hour the VPN connection is
+      provisioned and available.
     entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 1000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://ec2.amazonaws.com
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
-        geo: global
-        domains:
-          - https://ec2.amazonaws.com
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Public Documentation
-      - name: Community Support
-      - name: Sandbox Access
-      - name: AWS VPN API
-  - id: amazon-vpn-pro
-    name: Professional
-    type: paid
-    description: Production tier for Amazon VPN. Provides higher quotas, priority support, and access
-      to the broader API portfolio. Pricing placeholder; align with the provider's pricing page.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 100000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://ec2.amazonaws.com
-        unit: 1
-        price: TBD
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains:
-          - https://ec2.amazonaws.com
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
+      - label: VPN connection hour
+        name: connection_hour
         type: metered
-        metric: requests
-        limit: -1
+        metric: connection-hours
+        unit: 1
+        price: '0.05'
+        currency: USD
+        timeFrame: hour
+        geo: us
+      - label: Data transfer out
+        name: data_transfer_out
+        type: metered
+        metric: gigabytes
+        unit: 1
+        price: '0.09'
+        currency: USD
+        timeFrame: month
+        geo: us
+        note: >-
+          Standard AWS data-transfer-out schedule. First 100 GB per month free across
+          AWS, then tiered from $0.09/GB down to $0.085/GB at higher volume bands.
+  - id: amazon-vpn-site-to-site-5gbps
+    name: AWS Site-to-Site VPN (large bandwidth tunnel, 5 Gbps)
+    type: metered
+    description: >-
+      Site-to-Site VPN connection on a transit gateway or Cloud WAN attachment supporting
+      up to 5 Gbps per tunnel. Announced 2025-09-25.
+    entries:
+      - label: VPN connection hour
+        name: connection_hour
+        type: metered
+        metric: connection-hours
+        unit: 1
+        price: '0.60'
+        currency: USD
+        timeFrame: hour
+        geo: us
+      - label: Data transfer out
+        name: data_transfer_out
+        type: metered
+        metric: gigabytes
+        unit: 1
+        price: '0.09'
+        currency: USD
+        timeFrame: month
+        geo: us
+  - id: amazon-vpn-concentrator
+    name: AWS Site-to-Site VPN Concentrator
+    type: metered
+    description: >-
+      Centralised hub for many VPN connections, announced 2025-11-15. Billed per
+      concentrator-hour plus a reduced per-connection-hour rate for connections
+      terminating on it.
+    entries:
+      - label: Concentrator hour
+        name: concentrator_hour
+        type: metered
+        metric: concentrator-hours
+        unit: 1
+        price: '1.95'
+        currency: USD
+        timeFrame: hour
+        geo: us
+      - label: VPN connection hour via concentrator
+        name: connection_hour
+        type: metered
+        metric: connection-hours
+        unit: 1
+        price: '0.01'
+        currency: USD
+        timeFrame: hour
+        geo: us
+  - id: amazon-vpn-accelerated
+    name: Accelerated AWS Site-to-Site VPN
+    type: metered
+    description: >-
+      Site-to-Site VPN routed over the AWS Global Accelerator network. Billed as a
+      standard Site-to-Site VPN connection plus AWS Global Accelerator charges (two
+      accelerators per connection) and a data transfer premium.
+    entries:
+      - label: VPN connection hour
+        name: connection_hour
+        type: metered
+        metric: connection-hours
+        unit: 1
+        price: '0.05'
+        currency: USD
+        timeFrame: hour
+        geo: us
+      - label: Data transfer premium
+        name: accelerated_dt_premium
+        type: metered
+        metric: gigabytes
+        unit: 1
+        price: '0.015'
+        currency: USD
         timeFrame: month
         geo: global
-        domains:
-          - https://ec2.amazonaws.com
-        unit: 1000
-        price: TBD
-        userMultiplied: false
-    elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
-      - name: AWS VPN API
-  - id: amazon-vpn-enterprise
-    name: Enterprise
-    type: enterprise
-    description: Custom-negotiated tier for Amazon VPN. Includes dedicated capacity, contractual SLAs,
-      security review, data residency options, and named technical account management.
+        note: >-
+          Published example rate for Americas-to-Europe traffic; the premium varies by
+          source and destination Region. AWS Global Accelerator hourly charges are
+          billed separately on that service's pricing page.
+  - id: amazon-vpn-client-vpn
+    name: AWS Client VPN
+    type: metered
+    description: >-
+      Managed remote-access OpenVPN-based endpoint for client devices. Billed per
+      subnet association hour on the endpoint plus per active client connection hour.
     entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: configurable
-        domains:
-          - https://ec2.amazonaws.com
+      - label: Endpoint association hour
+        name: endpoint_association_hour
+        type: metered
+        metric: association-hours
         unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 1000
-        timeFrame: minute
-        geo: configurable
-        domains:
-          - https://ec2.amazonaws.com
+        price: '0.10'
+        currency: USD
+        timeFrame: hour
+        geo: us
+      - label: Client connection hour
+        name: client_connection_hour
+        type: metered
+        metric: connection-hours
         unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
-      - name: Custom Data Residency
-      - name: AWS VPN API
+        price: '0.05'
+        currency: USD
+        timeFrame: hour
+        geo: us
+        note: >-
+          Published as $0.05 per active client connection-hour; the pricing page's worked
+          example shows 10 concurrent connections costing $0.50 per hour.
+additional_charges:
+  - name: Public IPv4 addresses
+    note: Public IPv4 address charges apply to all AWS VPN types.
+    docs: https://aws.amazon.com/vpc/pricing/
+  - name: AWS Transit Gateway attachment
+    price: '0.05'
+    currency: USD
+    timeFrame: hour
+    note: Charged when the VPN terminates on a transit gateway, per the pricing page examples.
+  - name: VPN logs
+    price: '0.00'
+    note: No additional charge for Site-to-Site VPN logs; standard Amazon CloudWatch Logs rates apply.
+api_request_charges:
+  charged: false
+  note: >-
+    Calls to the Amazon EC2 Query API that create, describe, modify or delete VPN
+    resources are not metered. Cost is attached to the provisioned resource and its
+    traffic, not to the API call — which is why there is no request-quota plan here.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

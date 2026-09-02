@@ -1,0 +1,139 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/cli/latest/reference/ec2/
+docs:
+  - https://docs.aws.amazon.com/cli/latest/reference/ec2/
+  - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+  - https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-cli.html
+name: AWS CLI
+binary: aws
+vendor: Amazon Web Services
+official: true
+note: >-
+  There is no `aws vpn` command. AWS VPN is administered through the `aws ec2` command
+  group, because Site-to-Site VPN and Client VPN are modelled as EC2 resources. The 33
+  commands below are the kebab-cased forms of the 33 Action values in
+  openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml; each was
+  spot-checked against its reference page on docs.aws.amazon.com (5 of 33 fetched live,
+  all HTTP 200).
+versions:
+  - track: v2
+    version: 2.36.37
+    published_source: https://github.com/aws/aws-cli/tags
+    checked: '2026-09-01'
+    note: Current AWS CLI v2 tag. Distributed as a signed installer/bundle, not via PyPI.
+  - track: v1
+    version: 1.46.1
+    published: '2026-08-27'
+    registry: pypi
+    url: https://pypi.org/project/awscli/
+install:
+  - platform: macos
+    method: installer
+    command: >-
+      curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg" &&
+      sudo installer -pkg AWSCLIV2.pkg -target /
+  - platform: linux
+    method: zip
+    command: >-
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      && unzip awscliv2.zip && sudo ./aws/install
+  - platform: windows
+    method: msi
+    command: https://awscli.amazonaws.com/AWSCLIV2.msi
+  - platform: any
+    method: pypi
+    command: pip install awscli
+    note: Installs AWS CLI v1 only.
+authentication:
+  configure: aws configure
+  credentials_file: ~/.aws/credentials
+  sso: aws sso login
+  note: Resolves the same SigV4 credentials as the SDKs. See authentication/amazon-vpn-authentication.yml.
+global_flags:
+  - flag: --dry-run
+    note: Maps to the DryRun request parameter. Permissions rehearsal only.
+  - flag: --client-token
+    note: Maps to the ClientToken parameter on the four Client VPN actions that support it.
+  - flag: --region
+    note: Required — VPN resources and their throttling buckets are per-Region.
+  - flag: --filters
+    note: Server-side filtering on the Describe commands (Name=/Values= form).
+  - flag: --output
+    values: [json, yaml, text, table]
+command_groups:
+  - group: Site-to-Site VPN connections
+    commands:
+      - aws ec2 create-vpn-connection
+      - aws ec2 describe-vpn-connections
+      - aws ec2 delete-vpn-connection
+      - aws ec2 modify-vpn-connection
+      - aws ec2 modify-vpn-connection-options
+  - group: VPN tunnels
+    commands:
+      - aws ec2 modify-vpn-tunnel-certificate
+      - aws ec2 modify-vpn-tunnel-options
+  - group: Static VPN routes
+    commands:
+      - aws ec2 create-vpn-connection-route
+      - aws ec2 delete-vpn-connection-route
+      - aws ec2 enable-vgw-route-propagation
+      - aws ec2 disable-vgw-route-propagation
+  - group: Customer gateways
+    commands:
+      - aws ec2 create-customer-gateway
+      - aws ec2 describe-customer-gateways
+      - aws ec2 delete-customer-gateway
+  - group: Virtual private gateways
+    commands:
+      - aws ec2 create-vpn-gateway
+      - aws ec2 describe-vpn-gateways
+      - aws ec2 delete-vpn-gateway
+      - aws ec2 attach-vpn-gateway
+      - aws ec2 detach-vpn-gateway
+  - group: Client VPN endpoints
+    commands:
+      - aws ec2 create-client-vpn-endpoint
+      - aws ec2 describe-client-vpn-endpoints
+      - aws ec2 delete-client-vpn-endpoint
+      - aws ec2 modify-client-vpn-endpoint
+      - aws ec2 associate-client-vpn-target-network
+      - aws ec2 disassociate-client-vpn-target-network
+  - group: Client VPN authorization and routes
+    commands:
+      - aws ec2 authorize-client-vpn-ingress
+      - aws ec2 revoke-client-vpn-ingress
+      - aws ec2 create-client-vpn-route
+      - aws ec2 delete-client-vpn-route
+      - aws ec2 import-client-vpn-client-certificate-revocation-list
+      - aws ec2 export-client-vpn-client-certificate-revocation-list
+  - group: Client VPN sessions
+    commands:
+      - aws ec2 describe-client-vpn-connections
+      - aws ec2 terminate-client-vpn-connections
+  - group: Customer gateway device configuration
+    commands:
+      - aws ec2 get-vpn-connection-device-types
+      - aws ec2 get-vpn-connection-device-sample-configuration
+    note: >-
+      Added 2021-09-21 with the updated Download Configuration utility. These two actions
+      are NOT in the repo's OpenAPI Action enum — a gap between the captured contract and
+      the shipped surface, recorded rather than silently patched.
+  - group: Agent tooling
+    commands:
+      - aws agent-toolkit search-skills --search-query vpn
+    note: >-
+      Agent Toolkit for AWS. AWS's own VPN documentation pages point AI coding assistants
+      at this read-only catalog search for AWS-authored skills. See skills/_index.yml.
+key_flows:
+  - name: Stand up a Site-to-Site VPN
+    steps:
+      - aws ec2 create-customer-gateway --type ipsec.1 --public-ip <cgw-ip> --bgp-asn <asn>
+      - aws ec2 create-vpn-gateway --type ipsec.1
+      - aws ec2 attach-vpn-gateway --vpn-gateway-id <vgw-id> --vpc-id <vpc-id>
+      - aws ec2 create-vpn-connection --type ipsec.1 --customer-gateway-id <cgw-id> --vpn-gateway-id <vgw-id>
+      - aws ec2 describe-vpn-connections --vpn-connection-ids <vpn-id>
+  - name: Rehearse a destructive change
+    steps:
+      - aws ec2 delete-vpn-connection --vpn-connection-id <vpn-id> --dry-run
+    note: Returns DryRunOperation if permitted, UnauthorizedOperation if not. Nothing is deleted.

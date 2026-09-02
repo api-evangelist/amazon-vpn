@@ -1,0 +1,168 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/CommonErrors.html
+also_derived_from: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+format: aws-query-xml
+note: >-
+  NOT RFC 9457. The Amazon EC2 Query API returns errors as an XML envelope
+  (<Response><Errors><Error><Code>…</Code><Message>…</Message></Error></Errors>
+  <RequestID>…</RequestID></Response>), never application/problem+json. The OpenAPI in
+  this repo declares only generic 400 and 500 responses; the codes below are the
+  published common-error registry that actually fires on the VPN action surface, read
+  from the EC2 API Reference. Codes are stable strings — an agent should branch on
+  <Code>, not on the HTTP status, because several distinct conditions share status 400
+  and 403.
+envelope:
+  content_type: text/xml
+  shape: Response.Errors.Error[]
+  fields:
+    code: Response.Errors.Error.Code
+    message: Response.Errors.Error.Message
+    request_id: Response.RequestID
+  note: >-
+    Always capture RequestID. It is the only correlation identifier AWS Support will
+    act on, and it is returned on errors as well as on success.
+problems:
+  - code: AccessDeniedException
+    status: 403
+    title: Not permitted to perform this action
+    detail: You don't have permission to perform this action.
+    remediation: Verify that the calling principal's IAM policy grants the ec2:* VPN action.
+    retryable: false
+  - code: NotAuthorized
+    status: 401
+    title: Not authorized
+    detail: You don't have permissions to perform this action.
+    remediation: Verify that your IAM policy includes the required permissions.
+    retryable: false
+  - code: ExpiredTokenException
+    status: 403
+    title: Security token expired
+    detail: The security token included in the request has expired.
+    remediation: Request a new security token and try again.
+    retryable: true
+  - code: UnrecognizedClientException
+    status: 403
+    title: Unknown credentials
+    detail: The X.509 certificate or AWS access key ID you provided doesn't exist in our records.
+    remediation: Verify that you're using valid, unexpired credentials.
+    retryable: false
+  - code: MissingAuthenticationToken
+    status: 403
+    title: Missing credentials
+    detail: The request must contain a valid AWS access key ID or X.509 certificate.
+    remediation: Sign the request with AWS Signature Version 4.
+    retryable: false
+  - code: IncompleteSignature
+    status: 400
+    title: Malformed SigV4 signature
+    detail: The request signature doesn't conform to AWS standards.
+    remediation: Use a current AWS SDK, or re-check the canonical request and signing key derivation.
+    retryable: false
+  - code: OptInRequired
+    status: 403
+    title: Service not enabled for this account
+    detail: Your AWS account needs a subscription for this service.
+    remediation: Enable the service in the account.
+    retryable: false
+  - code: MissingAction
+    status: 400
+    title: Action parameter missing
+    detail: The request is missing the Action parameter.
+    remediation: Add Action=<VpnOperation> — for example Action=DescribeVpnConnections.
+    retryable: false
+    source_operation: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml#invokeVpnAction
+  - code: MissingParameter
+    status: 400
+    title: Required parameter missing
+    detail: A required parameter for the specified action isn't included in the request.
+    remediation: Add the missing parameter named in the message.
+    retryable: false
+    source_operation: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml#invokeVpnAction
+  - code: InvalidParameterValue
+    status: 400
+    title: Invalid parameter value
+    detail: A value that you provided for a parameter isn't valid.
+    remediation: Check the parameter constraints in the action's API reference page.
+    retryable: false
+  - code: InvalidParameterCombination
+    status: 400
+    title: Conflicting parameters
+    detail: Parameters that must not be used together were used together.
+    remediation: Remove one of the conflicting parameters.
+    retryable: false
+  - code: InvalidQueryParameter
+    status: 400
+    title: Malformed query string
+    detail: The AWS query string is malformed or doesn't adhere to AWS standards.
+    remediation: Verify the form-encoded query string format.
+    retryable: false
+  - code: MalformedQueryString
+    status: 404
+    title: Query string syntax error
+    detail: The query string contains a syntax error.
+    remediation: Verify the query string.
+    retryable: false
+    note: Documented with HTTP status 404, not 400 — an agent branching on status alone will misroute this.
+  - code: ValidationError
+    status: 400
+    title: Input validation failed
+    detail: The input doesn't meet the required format or constraints.
+    remediation: Check that all required parameters are included and that values are valid.
+    retryable: false
+  - code: RequestExpired
+    status: 400
+    title: Request expired
+    detail: >-
+      The request took more than 15 minutes to reach the service, the date stamp is more
+      than 15 minutes in the future, or a pre-signed URL has expired.
+    remediation: Regenerate the request with a current timestamp and correct clock skew.
+    retryable: true
+  - code: ThrottlingException
+    status: 400
+    title: Request rate too high
+    detail: Your request rate is too high.
+    remediation: Back off exponentially with jitter. AWS SDKs retry this automatically.
+    retryable: true
+    see_also: rate-limits/amazon-vpn-rate-limits.yml
+  - code: RequestLimitExceeded
+    status: 503
+    title: API throttling limit exceeded
+    detail: >-
+      The per-account, per-Region token bucket for this EC2 action is empty. This is the
+      code the EC2 throttling reference names for API throttling.
+    remediation: >-
+      Back off exponentially with jitter; if sustained, request a bucket refill-rate
+      increase through AWS Support.
+    retryable: true
+    see_also: rate-limits/amazon-vpn-rate-limits.yml
+  - code: InternalFailure
+    status: 500
+    title: Internal server error
+    detail: The request can't be processed right now because of an internal server issue.
+    remediation: Retry with backoff; if it persists, contact AWS Support with the RequestID.
+    retryable: true
+    source_operation: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml#invokeVpnAction
+  - code: ServiceUnavailable
+    status: 503
+    title: Service temporarily unavailable
+    detail: The service is temporarily unavailable.
+    remediation: Retry with backoff.
+    retryable: true
+  - code: InvalidAction
+    status: 400
+    title: Unrecognised action
+    detail: >-
+      The Action value is not a valid EC2 operation. Observed live on 2026-09-01 —
+      GET https://ec2.amazonaws.com/openapi.json returned this code, which is how the
+      Query API answers every unrouted path.
+    remediation: Use one of the 33 Action values enumerated in the OpenAPI.
+    retryable: false
+  - code: AuthFailure
+    status: 401
+    title: Unsigned request
+    detail: >-
+      Returned for any unsigned request to the regional EC2 endpoint. Observed live on
+      2026-09-01 across every /.well-known/ probe.
+    remediation: Sign every request with SigV4.
+    retryable: false

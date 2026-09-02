@@ -1,0 +1,116 @@
+generated: '2026-09-01'
+method: probed
+source: >-
+  Live GET of the named /.well-known/ path list against every host in apis.yml
+  (baseURL, Website, Documentation) and every OpenAPI servers[] host, 2026-09-01.
+note: >-
+  One real document was served: RFC 9116 security.txt at aws.amazon.com, saved verbatim
+  as amazon-vpn-security.txt. Everything else missed. The two Amazon EC2 Query API hosts
+  answer every /.well-known/ path with an HTTP 401 AuthFailure XML envelope (the Query
+  API rejects unsigned requests before routing), not with a document. aws.amazon.com
+  301-redirects unknown /.well-known/ paths to a trailing-slash URL that then 404s;
+  docs.aws.amazon.com returns a 404 HTML error page.
+path_echo_control: passed
+soft_404_control:
+  path: /.well-known/amazon-vpn-negative-control-7f3ab91c.json
+  aws.amazon.com: 301 -> 404 (no document)
+  ec2.amazonaws.com: 401 AuthFailure XML (254 bytes, identical to every other path)
+  docs.aws.amazon.com: 404 HTML error page (1711 bytes)
+  verdict: >-
+    No host returned 2xx on the control path, so the single 200 recorded below is a
+    real document and not a catch-all.
+hit_count: 1
+hosts:
+  - host: https://aws.amazon.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: amazon-vpn-security.txt
+      - path: /.well-known/openid-configuration
+        status: 301
+      - path: /.well-known/oauth-authorization-server
+        status: 301
+      - path: /.well-known/oauth-protected-resource
+        status: 301
+      - path: /.well-known/api-catalog
+        status: 301
+      - path: /.well-known/ai-plugin.json
+        status: 301
+      - path: /.well-known/aauth-resource.json
+        status: 301
+      - path: /.well-known/agent-card.json
+        status: 301
+      - path: /.well-known/agent.json
+        status: 301
+  - host: https://ec2.amazonaws.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 401
+      - path: /.well-known/openid-configuration
+        status: 401
+      - path: /.well-known/oauth-authorization-server
+        status: 401
+      - path: /.well-known/oauth-protected-resource
+        status: 401
+      - path: /.well-known/api-catalog
+        status: 401
+      - path: /.well-known/ai-plugin.json
+        status: 401
+      - path: /.well-known/aauth-resource.json
+        status: 401
+      - path: /.well-known/agent-card.json
+        status: 401
+      - path: /.well-known/agent.json
+        status: 401
+  - host: https://ec2.us-east-1.amazonaws.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 401
+      - path: /.well-known/openid-configuration
+        status: 401
+      - path: /.well-known/oauth-authorization-server
+        status: 401
+      - path: /.well-known/oauth-protected-resource
+        status: 401
+      - path: /.well-known/api-catalog
+        status: 401
+      - path: /.well-known/ai-plugin.json
+        status: 401
+      - path: /.well-known/aauth-resource.json
+        status: 401
+      - path: /.well-known/agent-card.json
+        status: 401
+      - path: /.well-known/agent.json
+        status: 401
+  - host: https://docs.aws.amazon.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+security_txt:
+  file: amazon-vpn-security.txt
+  policy: https://vdp.aws.security/
+  contact: mailto:aws-security@amazon.com
+  bug_bounty: https://hackerone.com/aws_vdp
+  encryption: https://aws.amazon.com/security/aws-pgp-public-key/
+  preferred_languages: en
+  expires: '2026-09-24T16:25:03.000Z'
+  note: >-
+    Served by the AWS parent brand at aws.amazon.com and covers AWS VPN, which is an
+    AWS service rather than a separate company. Expires 2026-09-24 — 23 days after
+    this probe; a lapse would make this document non-conformant with RFC 9116 §2.5.

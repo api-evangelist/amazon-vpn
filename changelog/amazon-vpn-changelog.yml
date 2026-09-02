@@ -1,0 +1,128 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/vpn/latest/s2svpn/WhatsNew.html
+docs:
+  - https://docs.aws.amazon.com/vpn/latest/s2svpn/WhatsNew.html
+  - https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/WhatsNew.html
+  - https://aws.amazon.com/about-aws/whats-new/networking_and_content_delivery/
+scheme: dated-document-history
+current_version: '2016-11-15'
+current_version_note: >-
+  The EC2 API version is unchanged since 2016. The dated document history below is the
+  real change signal for AWS VPN — features land additively under the same API version,
+  which is why there are no version numbers in these entries.
+note: >-
+  Recent window only, read from the Site-to-Site VPN User Guide document history table.
+  The full table reaches back to 2011; entries older than 2019 are omitted here.
+entries:
+  - date: '2025-11-15'
+    title: Site-to-Site VPN Concentrators
+    type: addition
+    breaking: false
+    highlights: >-
+      Centralized hub for managing multiple VPN connections with enhanced scalability and
+      simplified network architecture.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-concentrator.html
+  - date: '2025-09-25'
+    title: Site-to-Site VPN support for Large Bandwidth Tunnels
+    type: addition
+    breaking: false
+    highlights: >-
+      Transit gateway and Cloud WAN VPN attachments with up to 5 Gbps throughput.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/large-bandwidth-tunnels.html
+  - date: '2025-07-01'
+    title: IPv6 support for outer tunnel IPs
+    type: addition
+    breaking: false
+    highlights: >-
+      IPv6 addresses for the outer tunnel IPs on Transit Gateway and Cloud WAN VPN
+      connections — IPv6-in-IPv6 and IPv4-in-IPv6.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/ipv4-ipv6.html
+  - date: '2025-05-27'
+    title: Updated the AWSVPCS2SVpnServiceRolePolicy AWS managed policy
+    type: change
+    breaking: false
+    highlights: >-
+      New permissions allowing Site-to-Site VPN to manage the VPN connection's AWS
+      Secrets Manager managed secret.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/s2s-security-iam-awsmanpol.html
+  - date: '2025-05-27'
+    title: Updated pre-shared key storage options
+    type: addition
+    breaking: false
+    highlights: Site-to-Site VPN supports AWS Secrets Manager for storing a pre-shared key.
+  - date: '2023-01-19'
+    title: Classic VPN info removed
+    type: removal
+    breaking: false
+    highlights: Classic VPN content removed from the guide.
+  - date: '2022-12-09'
+    title: VPN log example messages
+    type: addition
+    breaking: false
+    highlights: Sample logs added for Site-to-Site VPN connections.
+  - date: '2021-09-21'
+    title: Updated Download Configuration utility
+    type: addition
+    breaking: false
+    highlights: >-
+      IKEv2 parameter support for many customer gateway devices, and two new API actions —
+      GetVpnConnectionDeviceTypes and GetVpnConnectionDeviceSampleConfiguration.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html
+  - date: '2020-10-29'
+    title: VPN connection notifications
+    type: addition
+    breaking: false
+    highlights: Site-to-Site VPN sends VPN connection notifications to the AWS Health Dashboard.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-vpn-health-events.html
+  - date: '2020-08-27'
+    title: VPN tunnel initiation
+    type: addition
+    breaking: false
+    highlights: Configure VPN tunnels so that AWS brings up the tunnels.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/initiate-vpn-tunnels.html
+  - date: '2020-08-27'
+    title: Modify VPN connection options
+    type: addition
+    breaking: false
+    highlights: ModifyVpnConnectionOptions — change connection options on an existing VPN.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/modify-vpn-connection-options.html
+  - date: '2020-08-14'
+    title: Additional security algorithms
+    type: addition
+    breaking: false
+    highlights: Additional security algorithms applicable to VPN tunnels.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html
+  - date: '2020-08-12'
+    title: IPv6 support inside tunnels
+    type: addition
+    breaking: false
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/ipv4-ipv6.html
+  - date: '2020-03-31'
+    title: Merge AWS Site-to-Site VPN guides
+    type: change
+    breaking: false
+    highlights: >-
+      The AWS Site-to-Site VPN Network Administrator Guide was merged into the
+      Site-to-Site VPN User Guide.
+  - date: '2019-12-03'
+    title: Accelerated AWS Site-to-Site VPN connections
+    type: addition
+    breaking: false
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/accelerated-vpn.html
+  - date: '2019-08-29'
+    title: Modify Site-to-Site VPN tunnel options
+    type: addition
+    breaking: false
+    highlights: ModifyVpnTunnelOptions and additional configurable tunnel options.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html
+  - date: '2019-08-15'
+    title: AWS Private Certificate Authority private certificate support
+    type: addition
+    breaking: false
+    highlights: Authenticate a VPN with a private certificate from AWS Private CA.
+    docs: https://docs.aws.amazon.com/vpn/latest/s2svpn/vpn-tunnel-authentication-options.html#certificate
+breaking_changes_recent: 0
+breaking_changes_note: >-
+  No breaking change appears anywhere in the published document history since the guide
+  was split out in 2018. Every entry is additive or documentation-only.

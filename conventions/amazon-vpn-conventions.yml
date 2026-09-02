@@ -1,0 +1,229 @@
+generated: '2026-09-01'
+method: searched
+source: https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html
+docs:
+  - https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/CommonParameters.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/CommonErrors.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/throttling.html
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVpnConnection.html
+derived_from: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+description: >-
+  Cross-cutting request/response semantics for the AWS VPN action surface of the Amazon
+  EC2 Query API. Every VPN operation is an HTTP POST of form-encoded parameters to the
+  regional EC2 endpoint with Action=<Name>&Version=2016-11-15, signed with SigV4.
+
+protocol:
+  style: aws-query
+  transport: HTTPS POST
+  content_type: application/x-www-form-urlencoded
+  response_content_type: text/xml
+  action_discriminator: Action
+  version_parameter: Version
+  current_version: '2016-11-15'
+  note: >-
+    Not REST. There is one path (`/`) and one HTTP method; the operation is selected by
+    the `Action` form parameter. An agent that expects resource paths and verbs will not
+    find them here.
+
+authentication:
+  style: aws-sigv4
+  header: Authorization
+  scheme: AWS4-HMAC-SHA256
+  scoped_by: IAM policy (ec2:* action-level permissions)
+  oauth: false
+  see_also: authentication/amazon-vpn-authentication.yml
+
+idempotency:
+  supported: true
+  mechanisms:
+    - kind: idempotent-by-default
+      parameter: null
+      actions:
+        - CreateVpnConnection
+      evidence: >-
+        "This is an idempotent operation. If you perform the operation more than once,
+        Amazon EC2 doesn't return an error." — API_CreateVpnConnection reference, and
+        CreateVpnConnection is named in the EC2 "Idempotent by default" list.
+    - kind: client-token
+      parameter: ClientToken
+      cli_flag: --client-token
+      constraints: Unique, case-sensitive string of up to 64 ASCII characters.
+      actions:
+        - AssociateClientVpnTargetNetwork
+        - AuthorizeClientVpnIngress
+        - CreateClientVpnEndpoint
+        - CreateClientVpnRoute
+      scope: regional
+      mismatch_error: IdempotentParameterMismatch
+      evidence: >-
+        EC2 "Idempotent using a client token" list. Retrying with the same token and the
+        same parameters succeeds without acting again; retrying with the same token and
+        different parameters (other than Region or Availability Zone) fails with
+        IdempotentParameterMismatch.
+  retention_window: null
+  retention_note: >-
+    AWS does not publish a client-token retention period for EC2. Recorded as null
+    rather than guessed — an agent cannot rely on a token still being recognised after
+    an unstated interval.
+  gap: >-
+    16 of the 33 mutating VPN actions have no idempotency mechanism at all, including
+    DeleteVpnConnection, ModifyVpnTunnelOptions, CreateCustomerGateway and
+    CreateVpnGateway. An agent retrying CreateVpnGateway after a timeout can create a
+    second gateway.
+
+dry_run_mode:
+  supported: true
+  parameter: DryRun
+  type: boolean
+  applies_to: All mutating VPN actions, and the Describe actions.
+  success_error: DryRunOperation
+  failure_error: UnauthorizedOperation
+  semantics: >-
+    Checks whether the caller has the required IAM permissions for the action without
+    performing it. It is a permissions rehearsal, NOT a full validation — parameter
+    validity and resource-state preconditions are not evaluated.
+  evidence: >-
+    "Checks whether you have the required permissions for the action, without actually
+    making the request, and provides an error response. If you have the required
+    permissions, the error response is DryRunOperation. Otherwise, it is
+    UnauthorizedOperation." — present on every VPN action reference page.
+
+reversibility:
+  grade: documented
+  note: >-
+    Every write on this surface has a named inverse operation, and the inverses are
+    first-class API actions rather than support requests. What does NOT exist is a
+    restore window: AWS publishes no period during which a deleted VPN connection,
+    gateway or Client VPN endpoint can be recovered. Deletion is terminal, and the
+    DeleteVpnConnection reference says so operationally — recreating a connection issues
+    NEW tunnel credentials and requires reconfiguring the customer gateway device. So
+    the reversal path is documented; the window is not, and none is asserted here.
+  surfaces:
+    - write: CreateVpnConnection
+      reversal: DeleteVpnConnection
+      window: null
+      window_stated: false
+      docs: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeleteVpnConnection.html
+      note: >-
+        Not a restore. A new connection returns new tunnel configuration and a new
+        VpnConnectionId; the customer gateway device must be reconfigured.
+    - write: CreateVpnGateway
+      reversal: DeleteVpnGateway
+      window: null
+      window_stated: false
+    - write: AttachVpnGateway
+      reversal: DetachVpnGateway
+      window: null
+      window_stated: false
+      note: True reversal — the gateway and VPC both survive.
+    - write: CreateCustomerGateway
+      reversal: DeleteCustomerGateway
+      window: null
+      window_stated: false
+    - write: CreateVpnConnectionRoute
+      reversal: DeleteVpnConnectionRoute
+      window: null
+      window_stated: false
+      note: True reversal.
+    - write: EnableVgwRoutePropagation
+      reversal: DisableVgwRoutePropagation
+      window: null
+      window_stated: false
+      note: True reversal.
+    - write: CreateClientVpnEndpoint
+      reversal: DeleteClientVpnEndpoint
+      window: null
+      window_stated: false
+    - write: AssociateClientVpnTargetNetwork
+      reversal: DisassociateClientVpnTargetNetwork
+      window: null
+      window_stated: false
+      note: True reversal.
+    - write: AuthorizeClientVpnIngress
+      reversal: RevokeClientVpnIngress
+      window: null
+      window_stated: false
+      note: True reversal.
+    - write: CreateClientVpnRoute
+      reversal: DeleteClientVpnRoute
+      window: null
+      window_stated: false
+      note: True reversal.
+    - write: TerminateClientVpnConnections
+      reversal: null
+      window: null
+      window_stated: false
+      note: >-
+        No reversal. Terminating an active client session cannot be undone from the API;
+        the client must reconnect.
+    - write: ModifyVpnTunnelOptions
+      reversal: ModifyVpnTunnelOptions
+      window: null
+      window_stated: false
+      note: >-
+        Reversible only by re-applying the previous options, which the caller must have
+        captured beforehand via DescribeVpnConnections. The API stores no prior state and
+        offers no undo. Modifying tunnel options triggers a tunnel endpoint replacement
+        and drops traffic on that tunnel.
+
+pagination:
+  style: none
+  parameters: []
+  response_fields: []
+  note: >-
+    The VPN Describe actions (DescribeVpnConnections, DescribeVpnGateways,
+    DescribeCustomerGateways) are UNPAGINATED — no MaxResults, no NextToken. They return
+    the full result set for the Region, bounded by the resource quotas in
+    rate-limits/amazon-vpn-rate-limits.yml (50 VPN connections per Region by default).
+    The Client VPN Describe actions do carry MaxResults/NextToken.
+  filtering:
+    style: Filter.N
+    form: Filter.1.Name=<name>&Filter.1.Value.1=<value>
+    note: >-
+      Server-side filtering replaces pagination here. Filters include customer-gateway-id,
+      state, vpn-gateway-id, type, tag:<key> and tag-key.
+
+request_tracing:
+  request_id_field: Response.RequestID
+  response_element: requestId
+  header: null
+  note: >-
+    The correlation identifier is in the XML body on both success and error responses,
+    not in a response header. Capture it on every call — it is what AWS Support acts on.
+
+versioning:
+  scheme: date-stamped-api-version
+  parameter: Version
+  current: '2016-11-15'
+  note: >-
+    The API version is a required request parameter, not a URL path segment or header.
+    The version has been stable since 2016; new VPN capabilities (Concentrators 2025,
+    large-bandwidth tunnels 2025, IPv6 outer tunnel IPs 2025) were added additively under
+    the same version string.
+  see_also: lifecycle/amazon-vpn-lifecycle.yml
+
+error_envelope:
+  format: aws-query-xml
+  rfc9457: false
+  shape: Response.Errors.Error[] with Code and Message, plus Response.RequestID
+  see_also: errors/amazon-vpn-problem-types.yml
+
+rate_limit_signaling:
+  headers: none
+  error_code: RequestLimitExceeded
+  algorithm: token-bucket, per account per Region per action
+  see_also: rate-limits/amazon-vpn-rate-limits.yml
+  note: >-
+    No X-RateLimit-* or RateLimit-* headers. An agent has no way to see how close it is
+    to the limit before it trips; the only in-band signal is the error itself, and
+    out-of-band observation requires CloudWatch or the Service Quotas console.
+
+metadata:
+  tagging: true
+  parameter: TagSpecification.N
+  note: Resource tags are the metadata mechanism; there is no free-form metadata object.
+
+field_expansion:
+  supported: false
+  note: No sparse-fieldset or expansion parameters. Responses are fixed XML shapes.

@@ -1,0 +1,144 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for AWS VPN API (Amazon EC2 Query API subset)
+  version: 1.0.0
+extends: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
+x-generated: '2026-09-01'
+x-method: generated
+x-source: >-
+  Derived from the artifacts harvested in this repo on 2026-09-01 — conventions/,
+  errors/, rate-limits/, lifecycle/, plans/, data-model/, mcp/ and skills/. Applies our
+  enhancements without mutating the harvested spec.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-enriched: '2026-09-01'
+      x-apievangelist-artifacts:
+        conventions: conventions/amazon-vpn-conventions.yml
+        errors: errors/amazon-vpn-problem-types.yml
+        rate_limits: rate-limits/amazon-vpn-rate-limits.yml
+        lifecycle: lifecycle/amazon-vpn-lifecycle.yml
+        plans: plans/amazon-vpn-plans-pricing.yml
+        data_model: data-model/amazon-vpn-data-model.yml
+        skills: skills/_index.yml
+        mcp: mcp/amazon-vpn-mcp.yml
+        events: asyncapi/amazon-vpn-events.yml
+      x-protocol-style: aws-query
+      x-response-content-type: text/xml
+      x-error-format: aws-query-xml
+      x-rfc9457: false
+  - target: $.info
+    update:
+      x-domain-standards:
+        - ietf-ipsec
+        - ietf-ike
+        - ietf-bgp4
+        - nat-traversal
+        - openvpn
+        - x509-mutual-tls
+      x-domain-standards-evidence: conformance/amazon-vpn-conformance.yml
+  - target: $.paths['/'].post
+    update:
+      x-idempotency:
+        idempotent_by_default: [CreateVpnConnection]
+        client_token_parameter: ClientToken
+        client_token_actions:
+          - AssociateClientVpnTargetNetwork
+          - AuthorizeClientVpnIngress
+          - CreateClientVpnEndpoint
+          - CreateClientVpnRoute
+        mismatch_error: IdempotentParameterMismatch
+        retention_window: null
+        docs: https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html
+      x-dry-run:
+        parameter: DryRun
+        success_error: DryRunOperation
+        failure_error: UnauthorizedOperation
+        scope: permissions-only
+      x-rate-limit:
+        algorithm: token-bucket
+        scope: per-account-per-region-per-action
+        headers: none
+        error_code: RequestLimitExceeded
+        non_mutating: {burst: 100, refill_per_second: 20}
+        mutating: {burst: 50, refill_per_second: 5}
+        tight_buckets:
+          AuthorizeClientVpnIngress: {burst: 5, refill_per_second: 2}
+          RevokeClientVpnIngress: {burst: 5, refill_per_second: 2}
+          CreateClientVpnRoute: {burst: 5, refill_per_second: 2}
+          DeleteClientVpnRoute: {burst: 5, refill_per_second: 2}
+      x-pagination:
+        site_to_site_describes: none
+        client_vpn_describes: {style: cursor, params: [MaxResults, NextToken]}
+        filtering: Filter.N
+      x-request-id: Response.RequestID
+  - target: $.paths['/'].post.parameters[?(@.name=='Action')]
+    update:
+      x-action-groups:
+        site-to-site-vpn-connections:
+          - CreateVpnConnection
+          - DescribeVpnConnections
+          - DeleteVpnConnection
+          - ModifyVpnConnection
+          - ModifyVpnConnectionOptions
+        vpn-tunnels:
+          - ModifyVpnTunnelCertificate
+          - ModifyVpnTunnelOptions
+        static-routes:
+          - CreateVpnConnectionRoute
+          - DeleteVpnConnectionRoute
+          - EnableVgwRoutePropagation
+          - DisableVgwRoutePropagation
+        customer-gateways:
+          - CreateCustomerGateway
+          - DescribeCustomerGateways
+          - DeleteCustomerGateway
+        virtual-private-gateways:
+          - CreateVpnGateway
+          - DescribeVpnGateways
+          - DeleteVpnGateway
+          - AttachVpnGateway
+          - DetachVpnGateway
+        client-vpn-endpoints:
+          - CreateClientVpnEndpoint
+          - DescribeClientVpnEndpoints
+          - DeleteClientVpnEndpoint
+          - ModifyClientVpnEndpoint
+          - AssociateClientVpnTargetNetwork
+          - DisassociateClientVpnTargetNetwork
+        client-vpn-authorization:
+          - AuthorizeClientVpnIngress
+          - RevokeClientVpnIngress
+          - CreateClientVpnRoute
+          - DeleteClientVpnRoute
+          - ImportClientVpnClientCertificateRevocationList
+          - ExportClientVpnClientCertificateRevocationList
+        client-vpn-sessions:
+          - DescribeClientVpnConnections
+          - TerminateClientVpnConnections
+      x-missing-from-spec:
+        - GetVpnConnectionDeviceTypes
+        - GetVpnConnectionDeviceSampleConfiguration
+      x-missing-note: >-
+        Two VPN actions added 2021-09-21 with the updated Download Configuration utility
+        are absent from the harvested Action enum. Recorded here rather than injected into
+        the spec — the overlay states the gap, it does not paper over it.
+  - target: $.paths['/'].post.responses['400']
+    update:
+      x-error-codes:
+        - InvalidAction
+        - IncompleteSignature
+        - InvalidParameterValue
+        - InvalidParameterCombination
+        - MissingAction
+        - MissingParameter
+        - ValidationError
+        - RequestExpired
+        - ThrottlingException
+      x-error-catalog: errors/amazon-vpn-problem-types.yml
+  - target: $.paths['/'].post.responses['500']
+    update:
+      x-error-codes:
+        - InternalFailure
+      x-retryable: true
+      x-retry-strategy: exponential-backoff-with-jitter
