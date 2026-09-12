@@ -1,0 +1,14 @@
+{
+  "repo": "amazon-vpn",
+  "feeds": [
+    {
+      "source": "https://aws.amazon.com/vpn/pricing/",
+      "feed_url": "https://aws.amazon.com/vpn/pricing/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-06T19:17:18Z"
+}
