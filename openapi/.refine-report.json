@@ -1,7 +1,7 @@
 {
   "provider": "amazon-vpn",
   "sources": [
-    "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml"
+    "_original/amazon-vpn-openapi.yml"
   ],
   "outputs": [
     "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml"
@@ -10,8 +10,13 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "amazon-vpn-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "amazon-vpn-openapi.yml: tagged paths POST / -> AWS VPN API (Amazon EC2 Query API Subset)",
+    "amazon-vpn-openapi.yml: declared missing tag: AWS VPN API (Amazon EC2 Query API Subset)",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
