@@ -190,3 +190,58 @@ api_request_charges:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  units:
+  - compute
+  - data
+  plans:
+  - name: AWS Site-to-Site VPN (standard, up to 1.25 Gbps)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    - data
+    periods:
+    - hour
+    - month
+  - name: AWS Site-to-Site VPN (large bandwidth tunnel, 5 Gbps)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    - data
+    periods:
+    - hour
+    - month
+  - name: AWS Site-to-Site VPN Concentrator
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    periods:
+    - hour
+  - name: Accelerated AWS Site-to-Site VPN
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    - data
+    periods:
+    - hour
+    - month
+  - name: AWS Client VPN
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    periods:
+    - hour
