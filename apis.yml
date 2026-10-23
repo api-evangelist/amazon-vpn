@@ -85,6 +85,8 @@ apis:
   - type: OpenAPI
     url: openapi/amazon-vpn-aws-vpn-api-amazon-ec2-query-api-subset-api-openapi.yml
 common:
+  - type: PostmanWorkspace
+    url: https://www.postman.com/kinlaneapi/amazon-vpn/overview
   - type: CapabilityMap
     url: capabilities/amazon-vpn-capability-edges.yml
     name: Amazon VPN Business Capability Map
