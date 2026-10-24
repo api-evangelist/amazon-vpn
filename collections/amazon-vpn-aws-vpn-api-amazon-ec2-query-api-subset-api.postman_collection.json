@@ -1,52 +1,26 @@
 {
+  "info": {
+    "_postman_id": "a1f28d9e-4c64-446b-aafc-b1c3ca067d4b",
+    "name": "AWS VPN API (Amazon EC2 Query API Subset) API",
+    "description": "AWS Site-to-Site VPN and Client VPN operations exposed through the\nAmazon EC2 Query API. Manage VPN connections, customer gateways,\nvirtual private gateways, and Client VPN endpoints between\non-premises networks, remote users, and Amazon VPC.\nAll requests use HTTP POST with form-encoded query parameters\n(`Action=`) against the regional EC2 endpoint, signed with\nAWS Signature Version 4 (SigV4).\n\nContact Support:\n Name: Amazon Web Services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-21T19:51:07.000Z",
+    "updatedAt": "2026-10-21T19:51:08.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-a1f28d9e-4c64-446b-aafc-b1c3ca067d4b"
+  },
   "item": [
     {
-      "id": "9e6909b1-f06d-4d88-8dad-effbc8c0dd71",
-      "name": "AWS VPN API (Amazon EC2 Query API Subset)",
-      "description": {
-        "content": "",
-        "type": "text/plain"
-      },
+      "name": "/",
       "item": [
         {
-          "id": "34f35919-ac41-40f5-98f1-8ef7e57b125b",
           "name": "Invoke an EC2 VPN action",
+          "id": "613bf6fb-e51d-48e1-abdf-1ea53a9b599b",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
-            "name": "Invoke an EC2 VPN action",
-            "description": {
-              "content": "All AWS VPN operations are invoked by POSTing form-encoded\nparameters with `Action=<OperationName>` and `Version=2016-11-15`\nto the regional EC2 endpoint.\n",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                ""
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "Action",
-                  "value": "<string>",
-                  "description": "(Required) "
-                },
-                {
-                  "disabled": false,
-                  "key": "Version",
-                  "value": "<string>",
-                  "description": "(Required) "
-                }
-              ],
-              "variable": [
-                {
-                  "description": "AWS region identifier.",
-                  "type": "any",
-                  "value": "{{region}}",
-                  "key": "region"
-                }
-              ]
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
@@ -57,381 +31,212 @@
                 "value": "text/xml"
               }
             ],
-            "method": "POST",
-            "auth": null,
             "body": {
               "mode": "urlencoded",
-              "urlencoded": [
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/?Action=AuthorizeClientVpnIngress&Version=2016-11-15",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
                 {
-                  "disabled": false,
-                  "key": "0",
-                  "value": "<"
+                  "description": "(Required) ",
+                  "key": "Action",
+                  "value": "AuthorizeClientVpnIngress"
                 },
                 {
-                  "disabled": false,
-                  "key": "1",
-                  "value": "o"
-                },
-                {
-                  "disabled": false,
-                  "key": "2",
-                  "value": "b"
-                },
-                {
-                  "disabled": false,
-                  "key": "3",
-                  "value": "j"
-                },
-                {
-                  "disabled": false,
-                  "key": "4",
-                  "value": "e"
-                },
-                {
-                  "disabled": false,
-                  "key": "5",
-                  "value": "c"
-                },
-                {
-                  "disabled": false,
-                  "key": "6",
-                  "value": "t"
-                },
-                {
-                  "disabled": false,
-                  "key": "7",
-                  "value": ">"
+                  "description": "(Required) ",
+                  "key": "Version",
+                  "value": "2016-11-15"
                 }
               ]
-            }
+            },
+            "description": "All AWS VPN operations are invoked by POSTing form-encoded\nparameters with `Action=` and `Version=2016-11-15`\nto the regional EC2 endpoint."
           },
           "response": [
             {
-              "id": "551a7686-19bf-4ebc-b7b7-e867b265b87a",
+              "id": "6d789798-d56e-4026-a536-afc44c734368",
               "name": "Action-specific XML response.",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    ""
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "Action",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "Version",
-                      "value": "<string>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "description": "AWS region identifier.",
-                      "type": "any",
-                      "value": "{{region}}",
-                      "key": "region"
-                    }
-                  ]
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: apikey",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "<API Key>"
+                    "key": "Content-Type",
+                    "value": "application/x-www-form-urlencoded"
                   },
                   {
                     "key": "Accept",
                     "value": "text/xml"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: apikey",
+                    "key": "Authorization",
+                    "value": "<API Key>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "urlencoded",
-                  "urlencoded": [
+                  "urlencoded": []
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/?Action=AuthorizeClientVpnIngress&Version=2016-11-15",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    ""
+                  ],
+                  "query": [
                     {
-                      "disabled": false,
-                      "key": "0",
-                      "value": "<"
+                      "description": "(Required) ",
+                      "key": "Action",
+                      "value": "AuthorizeClientVpnIngress"
                     },
                     {
-                      "disabled": false,
-                      "key": "1",
-                      "value": "o"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "2",
-                      "value": "b"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "3",
-                      "value": "j"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "4",
-                      "value": "e"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "5",
-                      "value": "c"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "6",
-                      "value": "t"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "7",
-                      "value": ">"
+                      "description": "(Required) ",
+                      "key": "Version",
+                      "value": "2016-11-15"
                     }
                   ]
                 }
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "xml",
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "text/xml"
                 }
               ],
-              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<element>\n</element>",
               "cookie": [],
-              "_postman_previewlanguage": "xml"
+              "responseTime": null,
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<element>\n</element>",
+              "createdAt": "2026-10-21T19:51:08.000Z",
+              "updatedAt": "2026-10-21T19:51:08.000Z",
+              "uid": "35240-6d789798-d56e-4026-a536-afc44c734368"
             },
             {
-              "id": "a7655278-5f36-430f-9245-d9439361aadb",
+              "id": "801071a8-2df0-4045-8c4e-5f727149dbd9",
               "name": "Client error.",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    ""
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "Action",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "Version",
-                      "value": "<string>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "description": "AWS region identifier.",
-                      "type": "any",
-                      "value": "{{region}}",
-                      "key": "region"
-                    }
-                  ]
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: apikey",
-                      "type": "text/plain"
-                    },
+                    "key": "Content-Type",
+                    "value": "application/x-www-form-urlencoded"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: apikey",
                     "key": "Authorization",
                     "value": "<API Key>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "urlencoded",
-                  "urlencoded": [
+                  "urlencoded": []
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/?Action=AuthorizeClientVpnIngress&Version=2016-11-15",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    ""
+                  ],
+                  "query": [
                     {
-                      "disabled": false,
-                      "key": "0",
-                      "value": "<"
+                      "description": "(Required) ",
+                      "key": "Action",
+                      "value": "AuthorizeClientVpnIngress"
                     },
                     {
-                      "disabled": false,
-                      "key": "1",
-                      "value": "o"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "2",
-                      "value": "b"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "3",
-                      "value": "j"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "4",
-                      "value": "e"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "5",
-                      "value": "c"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "6",
-                      "value": "t"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "7",
-                      "value": ">"
+                      "description": "(Required) ",
+                      "key": "Version",
+                      "value": "2016-11-15"
                     }
                   ]
                 }
               },
               "status": "Bad Request",
               "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
+              "_postman_previewlanguage": "text",
+              "header": [],
               "cookie": [],
-              "_postman_previewlanguage": "text"
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-10-21T19:51:08.000Z",
+              "updatedAt": "2026-10-21T19:51:08.000Z",
+              "uid": "35240-801071a8-2df0-4045-8c4e-5f727149dbd9"
             },
             {
-              "id": "ced16710-8590-4790-93d7-6250b64372b1",
+              "id": "8a8bc2a8-aee3-49a1-bf88-05480c11145f",
               "name": "Server error.",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    ""
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "Action",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "Version",
-                      "value": "<string>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "description": "AWS region identifier.",
-                      "type": "any",
-                      "value": "{{region}}",
-                      "key": "region"
-                    }
-                  ]
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: apikey",
-                      "type": "text/plain"
-                    },
+                    "key": "Content-Type",
+                    "value": "application/x-www-form-urlencoded"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: apikey",
                     "key": "Authorization",
                     "value": "<API Key>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "urlencoded",
-                  "urlencoded": [
+                  "urlencoded": []
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/?Action=AuthorizeClientVpnIngress&Version=2016-11-15",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    ""
+                  ],
+                  "query": [
                     {
-                      "disabled": false,
-                      "key": "0",
-                      "value": "<"
+                      "description": "(Required) ",
+                      "key": "Action",
+                      "value": "AuthorizeClientVpnIngress"
                     },
                     {
-                      "disabled": false,
-                      "key": "1",
-                      "value": "o"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "2",
-                      "value": "b"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "3",
-                      "value": "j"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "4",
-                      "value": "e"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "5",
-                      "value": "c"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "6",
-                      "value": "t"
-                    },
-                    {
-                      "disabled": false,
-                      "key": "7",
-                      "value": ">"
+                      "description": "(Required) ",
+                      "key": "Version",
+                      "value": "2016-11-15"
                     }
                   ]
                 }
               },
               "status": "Internal Server Error",
               "code": 500,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
+              "_postman_previewlanguage": "text",
+              "header": [],
               "cookie": [],
-              "_postman_previewlanguage": "text"
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-10-21T19:51:08.000Z",
+              "updatedAt": "2026-10-21T19:51:08.000Z",
+              "uid": "35240-8a8bc2a8-aee3-49a1-bf88-05480c11145f"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "createdAt": "2026-10-21T19:51:08.000Z",
+          "updatedAt": "2026-10-21T19:51:08.000Z",
+          "uid": "35240-613bf6fb-e51d-48e1-abdf-1ea53a9b599b"
         }
       ],
-      "event": []
-    }
-  ],
-  "event": [],
-  "variable": [
-    {
-      "description": {
-        "content": "AWS region identifier.",
-        "type": "text/plain"
-      },
-      "type": "any",
-      "value": "us-east-1",
-      "key": "region"
-    },
-    {
-      "type": "string",
-      "value": "https://ec2.{{region}}.amazonaws.com",
-      "key": "baseUrl"
+      "id": "f90004f0-bb85-4918-a7ee-622ce1c38aa0",
+      "createdAt": "2026-10-21T19:51:08.000Z",
+      "updatedAt": "2026-10-21T19:51:08.000Z",
+      "uid": "35240-f90004f0-bb85-4918-a7ee-622ce1c38aa0"
     }
   ],
   "auth": {
@@ -439,25 +244,29 @@
     "apikey": [
       {
         "key": "key",
-        "value": "Authorization"
+        "value": "Authorization",
+        "type": "string"
       },
       {
         "key": "value",
-        "value": "{{apiKey}}"
+        "value": "{{apiKey}}",
+        "type": "string"
       },
       {
         "key": "in",
-        "value": "header"
+        "value": "header",
+        "type": "string"
       }
     ]
   },
-  "info": {
-    "_postman_id": "737ed951-c51d-41cb-8740-3902ba84d88f",
-    "name": "AWS VPN API (Amazon EC2 Query API subset) AWS VPN API (Amazon EC2 Query API Subset) AWS VPN API (Amazon EC2 Query API Subset) AWS VPN API (Amazon EC2 Query API Subset) API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "AWS Site-to-Site VPN and Client VPN operations exposed through the\nAmazon EC2 Query API. Manage VPN connections, customer gateways,\nvirtual private gateways, and Client VPN endpoints between\non-premises networks, remote users, and Amazon VPC.\nAll requests use HTTP POST with form-encoded query parameters\n(`Action=<Name>`) against the regional EC2 endpoint, signed with\nAWS Signature Version 4 (SigV4).\n\n\nContact Support:\n Name: Amazon Web Services",
-      "type": "text/plain"
+  "variable": [
+    {
+      "key": "region",
+      "value": "us-east-1"
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://ec2.{{region}}.amazonaws.com"
     }
-  }
+  ]
 }
