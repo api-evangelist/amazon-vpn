@@ -1,0 +1,102 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://aws.amazon.com/vpn/pricing/
+sources:
+- https://aws.amazon.com/vpn/pricing/
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T120612
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: usage-other
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+published: true
+note: 'Main rate tables render via dynamic price tokens ({priceOf!...}) so core Site-to-Site and Client
+  VPN per-hour rates are not shown as text; numeric prices captured come from stated flat rates (5 Gbps,
+  Concentrator) and the pricing examples. Data transfer out charges referenced: first 100 GB free, $0.09
+  per GB first 10TB, $0.085 per GB next 40TB.'
+plan_count: 5
+currency: USD
+plans:
+- name: Site-to-Site VPN 5 Gbps connection
+  price_text: $0.60/hr per 5 Gbps Site-to-Site VPN connection per hour
+  price: 0.6
+  currency: USD
+  period: per-use
+  unit: connection-hour
+- name: Site-to-Site VPN Concentrator
+  price_text: $1.95/hr per Site-to-Site VPN Concentrator per hour
+  price: 1.95
+  currency: USD
+  period: per-use
+  unit: concentrator-hour
+- name: Site-to-Site VPN connections via Concentrator
+  price_text: $0.01/hr per Site-to-Site VPN connections per hour for sites connected via VPN Concentrator
+  price: 0.01
+  currency: USD
+  period: per-use
+  unit: connection-hour
+- name: Site-to-Site VPN 1.25 Gbps connection (US East Ohio, example)
+  price_text: the fee is $0.05 per hour
+  price: 0.05
+  currency: USD
+  period: per-use
+  unit: connection-hour
+- name: AWS Client VPN endpoint (US East Ohio, example)
+  price_text: you pay $0.10 per hour in AWS Client VPN endpoint hourly fees
+  price: 0.1
+  currency: USD
+  period: per-use
+  unit: endpoint-hour
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units:
+  - compute
+  plans:
+  - name: Site-to-Site VPN 5 Gbps connection
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Site-to-Site VPN Concentrator
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Site-to-Site VPN connections via Concentrator
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Site-to-Site VPN 1.25 Gbps connection (US East Ohio, example)
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: AWS Client VPN endpoint (US East Ohio, example)
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
