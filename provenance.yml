@@ -14,6 +14,9 @@ artifacts:
   capabilities/amazon-vpn-capability-edges.yml:
     method: unknown
     evidence: no authorship recorded
+  certification/status.yml:
+    method: unknown
+    evidence: no authorship recorded
   changelog/amazon-vpn-changelog.yml:
     method: searched
     evidence: declared in the artifact
@@ -32,6 +35,9 @@ artifacts:
   collections/amazon-vpn.postman_collection.json:
     method: derived
     evidence: openapi/amazon-vpn
+  compliance/amazon-vpn-compliance.yml:
+    method: harvested
+    evidence: declared in the artifact
   conformance/amazon-vpn-conformance.yml:
     method: searched
     evidence: declared in the artifact
@@ -53,6 +59,9 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
+  hosts/amazon-vpn-hosts.yml:
+    method: derived
+    evidence: declared in the artifact
   integrations/_index.yml:
     method: generated
     evidence: carries an API Evangelist house phrase
@@ -65,7 +74,7 @@ artifacts:
   kin/checks-2026-10-23T222754.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  kin/checks-2026-11-02T082323.yml:
+  kin/checks-2026-11-06T143934.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-23T000603.yml:
@@ -134,9 +143,15 @@ artifacts:
   kin/score-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-06T143934.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/amazon-vpn-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
+  llms/amazon-vpn-llms-provenance.yml:
+    method: searched
+    evidence: 'derive-llms-provenance.py: harvested'
   llms/amazon-vpn-llms.txt:
     method: searched
     evidence: 'derive-llms-provenance.py: harvested'
@@ -165,11 +180,17 @@ artifacts:
   packages/amazon-vpn-packages.yml:
     method: searched
     evidence: declared in the artifact
+  patterns/amazon-vpn-patterns.yml:
+    method: derived
+    evidence: declared in the artifact
   plans/amazon-vpn-plans-pricing.yml:
     method: searched
     evidence: declared in the artifact
   rate-limits/amazon-vpn-rate-limits.yml:
     method: searched
+    evidence: declared in the artifact
+  rules/amazon-vpn-rules.yml:
+    method: generated
     evidence: declared in the artifact
   rules/amazon-vpn-spectral-rules.yml:
     method: generated
@@ -201,9 +222,18 @@ artifacts:
   sla/amazon-vpn-sla.yml:
     method: generated
     evidence: declared in the artifact
+  terms/amazon-vpn-terms-of-service.yml:
+    method: harvested
+    evidence: declared in the artifact
+  vendors/amazon-vpn-vendors.yml:
+    method: unknown
+    evidence: no authorship recorded
   vocabulary/amazon-vpn-vocabulary.yaml:
     method: unknown
     evidence: no authorship recorded
+  vocabulary/amazon-vpn-vocabulary.yml:
+    method: derived
+    evidence: declared in the artifact
   well-known/amazon-vpn-security.txt:
     method: unknown
     evidence: no authorship recorded
